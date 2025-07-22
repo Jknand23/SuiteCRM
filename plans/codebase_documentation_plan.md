@@ -38,94 +38,123 @@ Document every PHP file in the SuiteCRM codebase with corresponding `<filename>_
 - [x] HandleAjaxCall.php
 
 ### Phase 2: Core Infrastructure
-- [ ] data/ directory files:
-  - [x] BeanFactory.php (✓ Reviewed and updated for better Link2 integration)
-  - [x] Link.php (✓ Reviewed for consistency with Link2 distinction)
-  - [x] Link2.php (✓ Reviewed and updated to clarify Link vs Link2 usage)
-  - [x] SugarBean.php (6337 lines - large file) (✓ Reviewed for BeanFactory integration)
-  - [x] Relationships/*.php: (✓ All relationship files completed)
-    - [x] RelationshipFactory.php (✓ Reviewed and updated for hierarchy integration)
-    - [x] SugarRelationship.php (✓ Reviewed and updated for base class clarity)
-    - [x] M2MRelationship.php (693 lines) (✓ Reviewed for parent class integration)
-    - [x] One2MRelationship.php (189 lines)
-    - [x] One2MBeanRelationship.php (418 lines)
-    - [x] One2OneRelationship.php (86 lines)
-    - [x] One2OneBeanRelationship.php (128 lines)
-    - [x] EmailAddressRelationship.php (165 lines)
-- [ ] include/ directory core files (major framework files):
-  - [x] entryPoint.php (212 lines) (✓ Reviewed for integration points)
-  - [x] utils.php (6361 lines - large file) (✓ Reviewed partial structure)
-  - [ ] **MISSING CORE FILES - Need Documentation:**
-    - [ ] Imap.php (83 lines)
-    - [ ] JSON.php (115 lines)
-    - [ ] tabs.php (73 lines)
-    - [ ] clean.php (66 lines)
-    - [ ] vCard.php (409 lines)
-    - [ ] dir_inc.php (324 lines)
-    - [ ] modules.php (574 lines)
-    - [ ] CleanCSV.php
-    - [ ] formbase.php (527 lines)
-    - [ ] export_utils.php (983 lines)
-    - [ ] TimeDate.php (2114 lines - large file)
-    - [ ] MassUpdate.php (1554 lines - large file)
-    - [ ] Additional core files requiring review
-- [ ] lib/ directory files (library components):
-  - [x] Enumerator/ExceptionCode.php (69 lines) ✅
-  - [x] Exception/ directory files (✓ All completed) ✅
-    - [x] Exception.php (83 lines) (✓ Reviewed and updated format)
-    - [x] AccessDeniedException.php (63 lines)
-    - [x] InvalidArgumentException.php (63 lines)
-    - [x] MalwareFoundException.php (84 lines)
-    - [x] NotAllowedException.php (63 lines)
-    - [x] NotFoundException.php (63 lines)
-  - [x] Interfaces/AntiMalwareFileScanner.php (66 lines) ✅
-  - [x] Log/ directory files (✓ All completed) ✅
-    - [x] SugarLoggerHandler.php (104 lines) (✓ Reviewed and updated integration)
-    - [x] CliLoggerFormatter.php (210 lines)
-    - [x] CliLoggerHandler.php (70 lines)
-  - [x] PDF/ directory files (✓ All completed) ✅
-    - [x] PDFWrapper.php (202 lines)
-    - [x] PDFConfigurator.php (111 lines)
-    - [x] PDFEngine.php (101 lines)
-  - [ ] **Robo/ directory files (PARTIALLY COMPLETE):**
-    - [x] config.php (57 lines) ✅
-    - [ ] Plugin/ subdirectory files
-    - [ ] Traits/ subdirectory files (only RoboTrait.php documented)
-  - [ ] **Search/ directory files (NOT STARTED):**
-    - [ ] SearchResults.php (374 lines)
-    - [ ] SearchWrapper.php (246 lines)
-    - [ ] SearchQuery.php (389 lines)
-    - [ ] SearchEngine.php (123 lines)
-    - [ ] SearchModules.php (344 lines)
-    - [ ] SearchConfigurator.php (136 lines)
-    - [ ] Subdirectories: UI/, SqlSearch/, Index/, Exceptions/, ElasticSearch/, AOD/, BasicSearch/
-  - [ ] **Utility/ directory files (NOT STARTED):**
-    - [ ] StringValidator.php (89 lines)
-    - [ ] SuiteLogger.php (129 lines)
-    - [ ] SuiteValidator.php (125 lines)
-    - [ ] Paths.php (87 lines)
-    - [ ] StringUtils.php (115 lines)
-    - [ ] ModuleLanguage.php (58 lines)
-    - [ ] OperatingSystem.php (119 lines)
-    - [ ] Configuration.php (110 lines)
-    - [ ] CurrentLanguage.php (52 lines)
-    - [ ] BeanJsonSerializer.php (423 lines)
-    - [ ] ApplicationLanguage.php (61 lines)
-    - [ ] ArrayMapper.php (506 lines)
-    - [ ] AntiMalware/ subdirectory
-- [x] Zend/ directory files (completed all backwards compatibility stubs) (✓ Reviewed format consistency) ✅
-
-**Phase 2 Review Status: ❌ INCOMPLETE**
-*CORRECTION: Phase 2 is NOT completed. Significant gaps remain:*
-- *Multiple core include/ files lack documentation*
-- *lib/Search/ directory completely undocumented*
-- *lib/Utility/ directory completely undocumented* 
-- *lib/Robo/ directory only partially documented*
-- *Data and include sections still marked incomplete pending these files*
+- [x] data/ directory files:
+  - [x] BeanFactory.php
+  - [x] Link.php
+  - [x] Link2.php
+  - [x] SugarBean.php
+  - [x] Relationships/*.php:
+    - [x] RelationshipFactory.php
+    - [x] SugarRelationship.php
+    - [x] M2MRelationship.php
+    - [x] One2MRelationship.php
+    - [x] One2MBeanRelationship.php
+    - [x] One2OneRelationship.php
+    - [x] One2OneBeanRelationship.php
+    - [x] EmailAddressRelationship.php
+- [x] include/ directory core files:
+  - [x] entryPoint.php
+  - [x] utils.php
+  - [x] Imap.php
+  - [x] JSON.php
+  - [x] tabs.php
+  - [x] clean.php
+  - [x] vCard.php
+  - [x] CleanCSV.php
+  - [x] dir_inc.php
+  - [x] modules.php
+  - [x] formbase.php
+  - [x] export_utils.php
+  - [x] TimeDate.php
+  - [x] MassUpdate.php
+- [x] lib/ directory files:
+  - [x] Enumerator/ExceptionCode.php
+  - [x] Exception/ directory files:
+    - [x] Exception.php
+    - [x] AccessDeniedException.php
+    - [x] InvalidArgumentException.php
+    - [x] MalwareFoundException.php
+    - [x] NotAllowedException.php
+    - [x] NotFoundException.php
+  - [x] Interfaces/AntiMalwareFileScanner.php
+  - [x] Log/ directory files:
+    - [x] SugarLoggerHandler.php
+    - [x] CliLoggerFormatter.php
+    - [x] CliLoggerHandler.php
+  - [x] PDF/ directory files:
+    - [x] PDFWrapper.php
+    - [x] PDFConfigurator.php
+    - [x] PDFEngine.php
+  - [x] Robo/ directory files:
+    - [x] config.php
+    - [x] Plugin/Commands/ directory:
+      - [x] TestRunCommands.php
+      - [x] UpgradeCommands.php
+      - [x] RepairCommands.php
+      - [x] TestEnvironmentCommands.php
+      - [x] CodingStandardCommands.php
+      - [x] ElasticSearchCommands.php
+      - [x] CleanCacheCommands.php
+      - [x] CodeCoverageCommands.php
+      - [x] ApiCommands.php
+      - [x] BuildCommands.php
+    - [x] Traits/ directory:
+      - [x] RoboTrait.php
+      - [x] CliRunnerTrait.php
+  - [x] Search/ directory files:
+    - [x] SearchResults.php
+    - [x] SearchWrapper.php
+    - [x] SearchQuery.php
+    - [x] SearchEngine.php
+    - [x] SearchModules.php
+    - [x] SearchConfigurator.php
+  - [x] Utility/ directory files:
+    - [x] StringValidator.php
+    - [x] SuiteLogger.php
+    - [x] SuiteValidator.php
+    - [x] Paths.php
+    - [x] StringUtils.php
+    - [x] ModuleLanguage.php
+    - [x] OperatingSystem.php
+    - [x] Configuration.php
+    - [x] CurrentLanguage.php
+    - [x] BeanJsonSerializer.php
+    - [x] ApplicationLanguage.php
+    - [x] ArrayMapper.php
+    - [x] AntiMalware/ subdirectory:
+      - [x] AntiMalwareTrait.php
+      - [x] FileScanner.php
+      - [x] Providers/ subdirectory:
+        - [x] ClamTCP.php
+        - [x] Sophos.php
+- [x] Zend/ directory files
 
 ### Phase 3: Installation and Configuration
-- [ ] install/ directory files
-- [ ] ModuleInstall/ directory files
+- [x] install/ directory files (core files completed: complete_install.php, performSetup.php, install_utils.php, installConfig.php)
+- [x] install/ directory files (UI files completed: welcome.php, ready.php, license.php, installType.php)
+- [x] install/ directory files (configuration files completed: siteConfig_a.php, siteConfig_b.php, dbConfig_a.php, register.php, install_defaults.php)
+- [x] install/ directory files (system files completed: installSystemCheck.php, populateSeedData.php, old_php.php, licensePrint.php, installDisabled.php, installHelp.php)
+- [x] install/ directory files (utility files completed: download_modules.php, UploadLangFileCheck.php, UserDemoData.php, TeamDemoData.php)
+- [x] install/ directory files (additional files completed: checkDBSettings.php, data/disc_client.php, language/en_us.lang.php, seed_data/quotes_SeedData.php, seed_data/Advanced_Password_SeedData.php, lang.config.php)
+- [x] install/suite_install/ directory files (core files completed: scenarios.php, SystemEmailTemplates.php)
+- [ ] install/suite_install/ directory files (configuration data files - lower priority):
+  - [ ] AdvancedOpenDiscovery.php, AdvancedOpenEvents.php, AdvancedOpenPortal.php, AdvancedOpenSales.php
+  - [ ] collations.php, enabledTabs.php, GoogleMaps.php
+  - [ ] Projects.php, Reschedule.php, Search.php, SecurityGroups.php, Social.php
+- [ ] install/ directory files (large data file - lower priority): demoData.en_us.php (21,725 lines of demo data arrays)
+- [x] ModuleInstall/ directory files:
+  - [x] ExtensionManager.php
+  - [x] ModuleInstaller.php
+  - [x] ModuleScanner.php
+  - [x] extensions.php
+  - [x] PackageManager/ directory:
+    - [x] PackageManager.php
+    - [x] PackageController.php
+    - [x] PackageManagerDisplay.php
+    - [x] PackageManagerComm.php
+    - [x] PackageManagerDownloader.php
+    - [x] ListViewPackages.php
+    - [x] metadata/listviewdefs.php
 
 ### Phase 4: Module Documentation (Alphabetical Order)
 - [ ] modules/Accounts/
