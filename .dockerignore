@@ -1,0 +1,53 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+docker/
+
+# Development
+.vscode/
+.idea/
+.cursor/
+*.log
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+docs/
+AI_Docs/
+
+# Testing
+tests/
+codeception.yml
+codeception.dist.yml
+phpunit.xml
+
+# Build artifacts
+build/
+node_modules/
+vendor/
+
+# Cache and temporary files
+cache/*
+!cache/.htaccess
+upload/*
+!upload/.htaccess
+
+# Configuration files that should be mounted
+config.php
+config_override.php
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db 
