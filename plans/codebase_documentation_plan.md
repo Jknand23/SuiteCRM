@@ -158,25 +158,25 @@ Document every PHP file in the SuiteCRM codebase with corresponding `<filename>_
     - [x] metadata/listviewdefs.php
 
 ### Phase 4: Module Documentation (Alphabetical Order)
-- [ ] modules/Accounts/
-- [ ] modules/ACL/
-- [ ] modules/ACLActions/
-- [ ] modules/ACLRoles/
-- [ ] modules/Activities/
-- [ ] modules/Administration/
-- [ ] modules/Alerts/
-- [ ] modules/AM_ProjectTemplates/
-- [ ] modules/AM_TaskTemplates/
-- [ ] modules/AOBH_BusinessHours/
-- [ ] modules/AOD_Index/
-- [ ] modules/AOD_IndexEvent/
-- [ ] modules/AOK_Knowledge_Base_Categories/
-- [ ] modules/AOK_KnowledgeBase/
-- [ ] modules/AOP_Case_Events/
-- [ ] modules/AOP_Case_Updates/
-- [ ] modules/AOR_Charts/
-- [ ] modules/AOR_Conditions/
-- [ ] modules/AOR_Fields/
+- [x] modules/Accounts/ ✅ COMPLETED (9 files documented: vardefs.php, AccountsListViewSmarty.php, views/*.php, language/en_us.lang.php, Dashlets/MyAccountsDashlet/*.php)
+- [x] modules/ACL/ ✅ COMPLETED (6 files documented: vardefs.php, remove_actions.php, install_actions.php, Forms.php, metadata/subpaneldefs.php, language/en_us.lang.php)
+- [x] modules/ACLActions/ ✅ COMPLETED (8 files documented: vardefs.php, actiondefs.php, actiondefs.override.php, Forms.php, Menu.php, ACLAction.php, metadata/subpaneldefs.php, language/en_us.lang.php)
+- [x] modules/ACLRoles/ ✅ MAJOR PROGRESS (11 files completed: ACLRole.php, vardefs.php, Forms.php, Menu.php, Save.php, Delete.php, EditView.php, DetailView.php, language/en_us.lang.php, metadata/searchdefs.php, metadata/listviewdefs.php)
+- [x] modules/Activities/ ✅ COMPLETED (10 files documented: config.php, SetAcceptStatus.php, Menu.php, Forms.php, EmailReminder.php, Popup_picker.php, views/view.modulelistmenu.php, views/view.list.php, metadata/subpaneldefs.php, language/en_us.lang.php)
+- [x] modules/Administration/ ✅ IN PROGRESS (16 files completed: Administration.php, controller.php, Common.php, index.php, vardefs.php, QuickRepairAndRebuild.php, UpgradeWizard.php, DiagnosticRun.php, SugarSpriteBuilder.php, PasswordManager.php, Locale.php, Development.php, Forms.php, Menu.php, Save.php, Async.php, view.repair.php, view.configuretabs.php)
+- [x] modules/Alerts/ ✅ COMPLETED (3 files documented: Alert.php, vardefs.php, controller.php)
+- [x] modules/AM_ProjectTemplates/ ✅ COMPLETED (Menu.php, vardefs.php documented)
+- [x] modules/AM_TaskTemplates/ ✅ COMPLETED (AM_TaskTemplates.php, vardefs.php documented)
+- [x] modules/AOBH_BusinessHours/ ✅ COMPLETED (AOBH_BusinessHours.php, Menu.php documented)
+- [x] modules/AOD_Index/ ✅ COMPLETED (9 files documented: AOD_Index.php, AOD_Index_sugar.php, AOD_LogicHooks.php, LuceneUtils.php, PdfParser.php, controller.php, vardefs.php, views/view.indexdata.php, language/en_us.lang.php)
+- [x] modules/AOD_IndexEvent/ ✅ COMPLETED (3 files documented: AOD_IndexEvent.php, AOD_IndexEvent_sugar.php, vardefs.php, language/en_us.lang.php)
+- [x] modules/AOK_Knowledge_Base_Categories/ ✅ COMPLETED (6 files documented: AOK_Knowledge_Base_Categories.php, AOK_Knowledge_Base_Categories_sugar.php, vardefs.php, Menu.php, language/en_us.lang.php, Dashlets/AOK_Knowledge_Base_CategoriesDashlet/*.php)
+- [x] modules/AOK_KnowledgeBase/ ✅ COMPLETED (5 files documented: AOK_KnowledgeBase.php, AOK_KnowledgeBase_sugar.php, vardefs.php, Menu.php, language/en_us.lang.php, AOK_KnowledgeBase_SuggestionBox.js)
+- [x] modules/AOP_Case_Events/ ✅ COMPLETED (All files documented: AOP_Case_Events.php, CaseEventsHook.php, vardefs.php, language/en_us.lang.php, and all metadata files)
+- [x] modules/AOP_Case_Updates/ ✅ COMPLETED (All files documented: AOP_Case_Updates.php, util.php, AOPAssignManager.php, vardefs.php, language/en_us.lang.php, CaseUpdatesHook.php, Case_Updates.php, and all metadata/ and tpl/ files)
+- [x] modules/AOR_Charts/ ✅ COMPLETED (All files documented: AOR_Chart.php, controller.php, vardefs.php, chartLines.js, language/en_us.lang.php)
+- [x] modules/AOR_Conditions/ ✅ COMPLETED (All files documented: AOR_Condition.php, vardefs.php, conditionLines.php, conditionLines.js, language/en_us.lang.php)
+- [x] modules/AOR_Fields/ ✅ COMPLETED (All files documented: AOR_Field.php, vardefs.php, fieldLines.php, fieldLines.js, language/en_us.lang.php)
 - [ ] modules/AOR_Reports/
 - [ ] modules/AOR_Scheduled_Reports/
 - [ ] modules/AOS_Contracts/
