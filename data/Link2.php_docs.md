@@ -1,7 +1,5 @@
-# Link2.php Documentation
-
 /**
- * @fileoverview Modern relationship management class that delegates work to specialized relationship classes
+ * @fileoverview Modern relationship management class that delegates work to specialized relationship classes. This is the preferred relationship interface in SuiteCRM, superseding the original Link class with improved architecture and better integration with the factory pattern.
  * @package SuiteCRM.Data
  * @copyright SugarCRM Inc. 2004-2013, SalesAgility Ltd. 2011-2018
  * @license GNU Affero General Public License version 3
@@ -9,7 +7,18 @@
 
 ## Overview
 
-Link2 represents a modern approach to relationship management in SuiteCRM, providing a cleaner interface for manipulating relationships between SugarBean objects. Unlike the original Link class, Link2 follows the delegation pattern, deferring complex relationship operations to specialized relationship classes while maintaining a simplified API for bean-level relationship manipulation.
+Link2 represents the modern, preferred approach to relationship management in SuiteCRM, providing a cleaner interface for manipulating relationships between SugarBean objects. Unlike the original Link class which implements relationship logic directly, Link2 follows the delegation pattern, deferring complex relationship operations to specialized relationship classes from the RelationshipFactory while maintaining a simplified API for bean-level relationship manipulation.
+
+**Link vs Link2 Usage:**
+- **Link2 (Preferred)**: Modern implementation using delegation pattern, better memory management, cleaner API
+- **Link (Legacy)**: Original implementation with direct SQL generation, still used in legacy modules
+- **Migration**: New development should use Link2; existing Link usage can be gradually migrated
+
+**Key Integration Points:**
+- **RelationshipFactory**: Creates specialized relationship objects (M2MRelationship, One2MRelationship, etc.)
+- **BeanFactory**: Uses `BeanFactory::getBean()` for all bean instantiation and caching
+- **SugarBean**: Integrates with bean relationship loading via `load_relationship()`
+- **SugarRelationship Hierarchy**: Delegates to relationship objects extending SugarRelationship
 
 This class represents a relationship from a single bean's perspective and serves as a facade for the underlying relationship implementation, providing type-safe operations and improved memory management.
 

@@ -3,7 +3,8 @@
 /**
  * @fileoverview Core base class for all business objects in SuiteCRM providing CRUD operations, 
  * relationship management, field handling, auditing, caching, and data access layer functionality.
- * This is the foundation class that all module-specific beans extend.
+ * This is the foundation class that all module-specific beans extend and integrates with BeanFactory 
+ * for object creation and Link2 for relationship management.
  * @package SuiteCRM.Data
  * @copyright SalesAgility Ltd.
  * @license GNU Affero General Public License version 3
@@ -13,6 +14,13 @@
 
 SugarBean is the foundational base class for all business objects in SuiteCRM. It implements the primary functionality needed for manipulating business objects including create, retrieve, update, and delete operations (CRUD). The class provides comprehensive data access layer functionality, relationship management, field processing, auditing capabilities, and caching mechanisms.
 
+**Key Integration Points:**
+- **BeanFactory Integration**: All beans are instantiated through `BeanFactory::getBean()` for consistent creation and caching
+- **Link2 Relationship System**: Integrates with Link2 objects for modern relationship management via `load_relationship()`
+- **RelationshipFactory**: Relationship objects created by the factory operate on SugarBean instances
+- **Module System**: Each module extends SugarBean to provide module-specific functionality
+- **Auditing System**: Built-in audit trail functionality for tracking data changes
+
 ### Key Design Principles
 - One bean per module folder with consistent naming conventions
 - Bean names are singular (e.g., Contact), table names are plural (e.g., contacts)
@@ -20,6 +28,7 @@ SugarBean is the foundational base class for all business objects in SuiteCRM. I
 - Support for custom fields and dynamic field definitions
 - Built-in auditing and change tracking capabilities
 - Optimistic locking for concurrent access control
+- Integration with BeanFactory caching for performance optimization
 
 ## Core Properties
 

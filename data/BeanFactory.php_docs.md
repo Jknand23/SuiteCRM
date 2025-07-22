@@ -1,7 +1,5 @@
-# BeanFactory.php Documentation
-
 /**
- * @fileoverview Factory class for creating and managing SugarBean objects with intelligent caching and memory management
+ * @fileoverview Factory class for creating and managing SugarBean objects with intelligent caching and memory management. Integrates with Link2 relationship management and provides the primary bean instantiation interface for the entire SuiteCRM application.
  * @package SuiteCRM.Data
  * @copyright SugarCRM Inc. 2004-2013, SalesAgility Ltd. 2011-2018
  * @license GNU Affero General Public License version 3
@@ -9,20 +7,31 @@
 
 ## Overview
 
-BeanFactory is a core factory class that provides centralized creation and management of SugarBean objects throughout SuiteCRM. It implements intelligent caching mechanisms to prevent multiple database retrievals per request and manages memory usage by maintaining a limited cache of recently accessed beans.
+BeanFactory is the central factory class that provides standardized creation and management of SugarBean objects throughout SuiteCRM. It implements intelligent caching mechanisms to prevent multiple database retrievals per request and manages memory usage by maintaining a limited cache of recently accessed beans. The factory integrates seamlessly with the Link2 relationship system and serves as the primary entry point for all bean instantiation across the application.
+
+**Key Integration Points:**
+- **Link2 Relationship System**: Provides bean objects for relationship operations via `BeanFactory::getBean()`
+- **SugarBean Base Class**: Instantiates all beans extending the SugarBean base class
+- **RelationshipFactory**: Works with relationship objects that utilize beans created by this factory
+- **Module System**: Integrates with module definitions and custom bean implementations
 
 ## Database Operations
 
 ### Primary Bean Retrieval
 
 #### `getBean($module, $id = null, $params = [], $deleted = true)`
-Retrieves a SugarBean object by ID with caching support. This is the primary method for accessing bean objects throughout the system.
+Retrieves a SugarBean object by ID with caching support. This is the primary method used throughout SuiteCRM, including by Link2 objects for relationship management.
 
 **Parameters:**
 - `$module` (string): The module name for the bean type
 - `$id` (string, optional): The record ID to retrieve. If null, creates new bean
 - `$params` (array): Configuration parameters including 'encode' and 'deleted' flags
 - `$deleted` (bool): Whether to include deleted records
+
+**Integration with Link2:**
+- Called by `Link2::getBeans()` to instantiate related bean objects
+- Used by relationship classes to create bean instances for relationship operations
+- Provides cached beans to improve relationship loading performance
 
 **Behavior:**
 - Checks cache first before database retrieval
@@ -37,21 +46,21 @@ Retrieves a SugarBean object by ID with caching support. This is the primary met
 - Implements LRU (Least Recently Used) eviction policy
 
 #### `getReloadedBean($module, $id = null, $params = [], $deleted = true)`
-Forces fresh retrieval from database, bypassing cache entirely. Used when current data state is critical.
+Forces fresh retrieval from database, bypassing cache entirely. Critical for relationship operations requiring current data state.
 
-**Use Cases:**
-- Post-save operations requiring fresh data
-- Concurrent modification scenarios
-- Data integrity verification
+**Relationship System Usage:**
+- Used by Link2 when fresh data is required after relationship changes
+- Called by relationship classes after add/remove operations
+- Essential for maintaining data consistency in complex relationship operations
 
 #### `getShallowBean($module, $id = null, $params = [], $deleted = true)`
-Creates shallow beans for relationship field population. These beans have incomplete relationship data but are suitable for basic field access.
+Creates shallow beans for relationship field population. These beans have incomplete relationship data but are suitable for basic field access and Link2 operations.
 
 **Behavior:**
 - Checks main cache first, falls back to shallow cache
 - Maintains separate `$shallowBeans` cache with 10-item limit
 - Automatically unregisters from main cache to prevent conflicts
-- Used internally by `SugarBean::fill_in_relationship_fields()`
+- Used internally by `SugarBean::fill_in_relationship_fields()` and Link2 operations
 
 ### Bean Creation
 

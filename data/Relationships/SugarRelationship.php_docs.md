@@ -1,7 +1,7 @@
 # SugarRelationship.php Documentation
 
 /**
- * @fileoverview Abstract base class defining the interface and common functionality for all relationship types in SuiteCRM
+ * @fileoverview Abstract base class defining the interface and common functionality for all relationship types in SuiteCRM. Provides the foundation for the relationship hierarchy including M2MRelationship, One2MRelationship, and other specialized relationship implementations.
  * @package SuiteCRM.Data.Relationships
  * @copyright SugarCRM Inc. 2004-2013, SalesAgility Ltd. 2011-2018
  * @license GNU Affero General Public License version 3
@@ -10,6 +10,19 @@
 ## Overview
 
 SugarRelationship is the abstract base class that defines the fundamental interface and shared functionality for all relationship types in SuiteCRM. It establishes the contract that concrete relationship implementations must follow while providing common database operations, logic hook management, and utility methods used across all relationship types.
+
+**Concrete Implementations:**
+- **M2MRelationship**: Many-to-many relationships using join tables (most common implementation)
+- **One2MRelationship**: One-to-many relationships with foreign key references  
+- **One2OneRelationship**: One-to-one relationships
+- **EmailAddressRelationship**: Specialized many-to-many for email address handling
+- **One2MBeanRelationship**: Bean-based one-to-many relationships
+- **One2OneBeanRelationship**: Bean-based one-to-one relationships
+
+**Factory Integration:**
+- Created by `RelationshipFactory::getRelationship()` based on relationship type and configuration
+- Used by `Link2` objects for relationship operations through delegation pattern
+- Integrates with `BeanFactory` for bean instantiation during relationship operations
 
 The class manages bidirectional relationships between modules through links, supports role-based filtering, and provides comprehensive logic hook integration for relationship lifecycle events.
 

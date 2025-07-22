@@ -39,42 +39,89 @@ Document every PHP file in the SuiteCRM codebase with corresponding `<filename>_
 
 ### Phase 2: Core Infrastructure
 - [ ] data/ directory files:
-  - [x] BeanFactory.php
-  - [x] Link.php
-  - [x] Link2.php  
-  - [x] SugarBean.php (6337 lines - large file)
-  - [ ] Relationships/*.php:
-    - [x] RelationshipFactory.php
-    - [x] SugarRelationship.php
-    - [x] M2MRelationship.php (693 lines)
+  - [x] BeanFactory.php (✓ Reviewed and updated for better Link2 integration)
+  - [x] Link.php (✓ Reviewed for consistency with Link2 distinction)
+  - [x] Link2.php (✓ Reviewed and updated to clarify Link vs Link2 usage)
+  - [x] SugarBean.php (6337 lines - large file) (✓ Reviewed for BeanFactory integration)
+  - [x] Relationships/*.php: (✓ All relationship files completed)
+    - [x] RelationshipFactory.php (✓ Reviewed and updated for hierarchy integration)
+    - [x] SugarRelationship.php (✓ Reviewed and updated for base class clarity)
+    - [x] M2MRelationship.php (693 lines) (✓ Reviewed for parent class integration)
     - [x] One2MRelationship.php (189 lines)
     - [x] One2MBeanRelationship.php (418 lines)
     - [x] One2OneRelationship.php (86 lines)
     - [x] One2OneBeanRelationship.php (128 lines)
     - [x] EmailAddressRelationship.php (165 lines)
 - [ ] include/ directory core files (major framework files):
-  - [x] entryPoint.php (212 lines)
-  - [x] utils.php (6361 lines - large file)
-- [x] lib/ directory files (library components):
-  - [x] Enumerator/ExceptionCode.php (69 lines)
-  - [x] Exception/Exception.php (83 lines)
-  - [x] Exception/AccessDeniedException.php (63 lines)
-  - [x] Exception/InvalidArgumentException.php (63 lines)
-  - [x] Exception/MalwareFoundException.php (84 lines)
-  - [x] Exception/NotAllowedException.php (63 lines)
-  - [x] Exception/NotFoundException.php (63 lines)
-  - [x] Interfaces/AntiMalwareFileScanner.php (66 lines)
-  - [x] Log/SugarLoggerHandler.php (104 lines)
-  - [x] Log/CliLoggerFormatter.php (210 lines)
-  - [x] Log/CliLoggerHandler.php (70 lines)
-  - [x] PDF/ directory files:
+  - [x] entryPoint.php (212 lines) (✓ Reviewed for integration points)
+  - [x] utils.php (6361 lines - large file) (✓ Reviewed partial structure)
+  - [ ] **MISSING CORE FILES - Need Documentation:**
+    - [ ] Imap.php (83 lines)
+    - [ ] JSON.php (115 lines)
+    - [ ] tabs.php (73 lines)
+    - [ ] clean.php (66 lines)
+    - [ ] vCard.php (409 lines)
+    - [ ] dir_inc.php (324 lines)
+    - [ ] modules.php (574 lines)
+    - [ ] CleanCSV.php
+    - [ ] formbase.php (527 lines)
+    - [ ] export_utils.php (983 lines)
+    - [ ] TimeDate.php (2114 lines - large file)
+    - [ ] MassUpdate.php (1554 lines - large file)
+    - [ ] Additional core files requiring review
+- [ ] lib/ directory files (library components):
+  - [x] Enumerator/ExceptionCode.php (69 lines) ✅
+  - [x] Exception/ directory files (✓ All completed) ✅
+    - [x] Exception.php (83 lines) (✓ Reviewed and updated format)
+    - [x] AccessDeniedException.php (63 lines)
+    - [x] InvalidArgumentException.php (63 lines)
+    - [x] MalwareFoundException.php (84 lines)
+    - [x] NotAllowedException.php (63 lines)
+    - [x] NotFoundException.php (63 lines)
+  - [x] Interfaces/AntiMalwareFileScanner.php (66 lines) ✅
+  - [x] Log/ directory files (✓ All completed) ✅
+    - [x] SugarLoggerHandler.php (104 lines) (✓ Reviewed and updated integration)
+    - [x] CliLoggerFormatter.php (210 lines)
+    - [x] CliLoggerHandler.php (70 lines)
+  - [x] PDF/ directory files (✓ All completed) ✅
     - [x] PDFWrapper.php (202 lines)
     - [x] PDFConfigurator.php (111 lines)
     - [x] PDFEngine.php (101 lines)
-  - [ ] Robo/ directory files
-  - [ ] Search/ directory files
-  - [ ] Utility/ directory files
-- [x] Zend/ directory files (completed all backwards compatibility stubs)
+  - [ ] **Robo/ directory files (PARTIALLY COMPLETE):**
+    - [x] config.php (57 lines) ✅
+    - [ ] Plugin/ subdirectory files
+    - [ ] Traits/ subdirectory files (only RoboTrait.php documented)
+  - [ ] **Search/ directory files (NOT STARTED):**
+    - [ ] SearchResults.php (374 lines)
+    - [ ] SearchWrapper.php (246 lines)
+    - [ ] SearchQuery.php (389 lines)
+    - [ ] SearchEngine.php (123 lines)
+    - [ ] SearchModules.php (344 lines)
+    - [ ] SearchConfigurator.php (136 lines)
+    - [ ] Subdirectories: UI/, SqlSearch/, Index/, Exceptions/, ElasticSearch/, AOD/, BasicSearch/
+  - [ ] **Utility/ directory files (NOT STARTED):**
+    - [ ] StringValidator.php (89 lines)
+    - [ ] SuiteLogger.php (129 lines)
+    - [ ] SuiteValidator.php (125 lines)
+    - [ ] Paths.php (87 lines)
+    - [ ] StringUtils.php (115 lines)
+    - [ ] ModuleLanguage.php (58 lines)
+    - [ ] OperatingSystem.php (119 lines)
+    - [ ] Configuration.php (110 lines)
+    - [ ] CurrentLanguage.php (52 lines)
+    - [ ] BeanJsonSerializer.php (423 lines)
+    - [ ] ApplicationLanguage.php (61 lines)
+    - [ ] ArrayMapper.php (506 lines)
+    - [ ] AntiMalware/ subdirectory
+- [x] Zend/ directory files (completed all backwards compatibility stubs) (✓ Reviewed format consistency) ✅
+
+**Phase 2 Review Status: ❌ INCOMPLETE**
+*CORRECTION: Phase 2 is NOT completed. Significant gaps remain:*
+- *Multiple core include/ files lack documentation*
+- *lib/Search/ directory completely undocumented*
+- *lib/Utility/ directory completely undocumented* 
+- *lib/Robo/ directory only partially documented*
+- *Data and include sections still marked incomplete pending these files*
 
 ### Phase 3: Installation and Configuration
 - [ ] install/ directory files

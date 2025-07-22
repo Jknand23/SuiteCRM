@@ -1,26 +1,37 @@
 # M2MRelationship.php Documentation
 
 /**
- * @fileoverview Comprehensive many-to-many relationship management class using intermediate join tables, providing full bidirectional relationship support with SecurityGroup integration, self-referencing capabilities, and sophisticated query generation
- * @package SuiteCRM.data.Relationships
+ * @fileoverview Comprehensive many-to-many relationship management class using intermediate join tables, extending SugarRelationship to provide full bidirectional relationship support with SecurityGroup integration, self-referencing capabilities, and sophisticated query generation
+ * @package SuiteCRM.Data.Relationships
  * @copyright 2011-2018 SalesAgility Ltd, 2004-2013 SugarCRM Inc.
  * @license GNU Affero General Public License version 3
  */
 
 ## Overview
-The `M2MRelationship` class extends `SugarRelationship` to provide comprehensive many-to-many relationship management through intermediate join tables. This foundational class serves as the base for most relationship types in SuiteCRM, offering sophisticated features including SecurityGroup integration, self-referencing relationship support, bidirectional link management, workflow integration, and advanced query generation capabilities.
+The `M2MRelationship` class extends `SugarRelationship` to provide comprehensive many-to-many relationship management through intermediate join tables. This foundational class serves as the base for most relationship types in SuiteCRM, implementing the abstract interface defined by SugarRelationship while offering sophisticated features including SecurityGroup integration, self-referencing relationship support, bidirectional link management, workflow integration, and advanced query generation capabilities.
+
+**Parent Class Integration:**
+- **Extends**: `SugarRelationship` - inherits abstract interface and common functionality
+- **Implements**: All abstract methods required by the relationship interface (`add()`, `remove()`, `load()`, `getQuery()`, etc.)
+- **Utilizes**: Parent class logic hook methods (`callBeforeAdd()`, `callAfterAdd()`, etc.)
+- **Leverages**: Common utility methods like `addRow()`, `removeRow()`, `checkExisting()`
+
+**Relationship Factory Integration:**
+- Created by `RelationshipFactory::getRelationship()` for many-to-many relationship types
+- Used as base class for specialized relationships like `EmailAddressRelationship`
+- Supports both standard many-to-many and true one-to-one relationships via join tables
 
 ## Class Definition
 - **Extends**: `SugarRelationship`
 - **Namespace**: Global
 - **Attributes**: `#[\AllowDynamicProperties]`
 - **API**: Public API class
-- **Type**: "many-to-many" (used for query construction)
+- **Type**: "many-to-many" (used for query construction and factory creation)
 
 ## Dependencies
-- `data/Relationships/SugarRelationship.php` - Base relationship functionality
+- `data/Relationships/SugarRelationship.php` - Base relationship functionality and abstract interface
 - `VardefManager` - Variable definition and link field management
-- `BeanFactory` - Bean creation and module resolution
+- `BeanFactory` - Bean creation and module resolution (integrates with bean caching)
 - `DBManagerFactory` - Database connection management
 - `TimeDate` - Date/time handling
 - `LoggerManager` - Logging infrastructure

@@ -1,7 +1,7 @@
 # RelationshipFactory.php Documentation
 
 /**
- * @fileoverview Singleton factory for creating and managing specialized relationship objects with caching support
+ * @fileoverview Singleton factory for creating and managing specialized relationship objects with caching support. Creates concrete implementations of the SugarRelationship abstract base class based on relationship type and configuration, used extensively by Link2 objects for relationship operations.
  * @package SuiteCRM.Data.Relationships
  * @copyright SugarCRM Inc. 2004-2013, SalesAgility Ltd. 2011-2018
  * @license GNU Affero General Public License version 3
@@ -10,6 +10,21 @@
 ## Overview
 
 SugarRelationshipFactory is a singleton factory class that manages the creation of specialized relationship objects in SuiteCRM. It implements comprehensive caching mechanisms for relationship definitions and provides type-specific relationship object instantiation based on relationship metadata. This factory is the central point for relationship object creation, used extensively by Link2 objects and other relationship management components.
+
+**Relationship Hierarchy Creation:**
+The factory creates concrete implementations of the `SugarRelationship` abstract base class:
+- **M2MRelationship**: Standard many-to-many relationships using join tables
+- **EmailAddressRelationship**: Specialized M2M variant for email address management
+- **One2MRelationship**: Table-based one-to-many relationships with foreign keys
+- **One2MBeanRelationship**: Bean-based one-to-many relationships without join tables
+- **One2OneRelationship**: Table-based one-to-one relationships
+- **One2OneBeanRelationship**: Bean-based one-to-one relationships
+
+**Integration Points:**
+- **Link2 Integration**: Primary consumer through `Link2::getRelationshipObject()`
+- **SugarRelationship Hierarchy**: Creates all concrete relationship implementations
+- **Relationship Cache**: Builds and maintains comprehensive relationship metadata cache
+- **Module System**: Integrates with module vardefs and relationship definitions
 
 The factory supports the creation of different relationship implementations: Many-to-Many (M2M), One-to-Many (One2M), One-to-One (One2One), and specialized variants like EmailAddressRelationship.
 
