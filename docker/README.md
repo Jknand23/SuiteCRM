@@ -22,11 +22,18 @@ git clone https://github.com/salesagility/SuiteCRM.git
 cd SuiteCRM
 ```
 
-### 2. Configure environment (optional)
-Copy and modify the environment file if needed:
+### 2. Configure environment (recommended)
+Copy and modify the environment file:
 ```bash
-cp .env.docker.example .env.docker
+cp env.docker.example .env.docker
+# Edit .env.docker to customize your settings
 ```
+
+**Important environment variables:**
+- `SUITECRM_ADMIN_USERNAME`: Admin username (default: admin)
+- `SUITECRM_ADMIN_PASSWORD`: Admin password (default: admin123)
+- `SUITECRM_SITE_URL`: Your site URL (default: http://localhost:8080)
+- `MYSQL_PASSWORD`: Database password (default: suitecrm_password)
 
 ### 3. Start the containers
 ```bash
@@ -42,12 +49,39 @@ docker-compose up -d
 - Application: http://localhost:8080
 - phpMyAdmin: http://localhost:8081
 
-### 5. Complete installation
-On first run, access http://localhost:8080 and use these database credentials:
-- Database Host: `mysql`
-- Database Name: `suitecrm`
-- Database User: `suitecrm`
-- Database Password: `suitecrm_password`
+### 5. Login to SuiteCRM
+The application is automatically configured on first startup! Use these credentials:
+- Username: `admin` (or your custom `SUITECRM_ADMIN_USERNAME`)
+- Password: `admin123` (or your custom `SUITECRM_ADMIN_PASSWORD`)
+
+**No manual installation required!** The startup script automatically:
+- Creates `config.php` with proper database settings
+- Sets up the database schema
+- Creates the admin user
+- Locks the installer for security
+
+## Data Persistence
+
+Your SuiteCRM data is automatically persisted between container restarts:
+
+### Persistent Volumes
+- **Database**: MySQL data stored in named volume `mysql_data`
+- **Uploads**: User uploads in `./upload/` directory
+- **Customizations**: Custom code in `./custom/` directory  
+- **Cache**: Application cache in `./cache/` directory
+- **Configuration**: SuiteCRM config in `./config.php` file
+
+### Starting Fresh
+To completely reset your SuiteCRM installation:
+```bash
+# Stop containers and remove all data
+docker-compose down -v
+rm -f config.php
+rm -rf upload/* custom/* cache/*
+
+# Start fresh
+./docker-startup.sh
+```
 
 ## Container Management
 
@@ -112,6 +146,30 @@ docker-compose exec mysql mysqladmin ping -h localhost
 
 ### Elasticsearch Memory Issues
 If Elasticsearch fails to start, increase Docker memory allocation or reduce ES heap size in docker-compose.yml.
+
+### Configuration Issues
+If you need to regenerate the SuiteCRM configuration:
+```bash
+# Remove existing config and restart
+rm config.php
+docker-compose restart suitecrm
+```
+
+### Admin Login Issues
+If you can't login with your admin credentials:
+```bash
+# Reset admin password
+docker-compose exec suitecrm php -r "
+define('sugarEntry', true);
+require_once('config.php');
+require_once('include/entryPoint.php');
+\$admin = new User();
+\$admin->retrieve_by_string_fields(array('user_name' => 'admin'));
+\$admin->user_hash = User::getPasswordHash('admin123');
+\$admin->save();
+echo 'Admin password reset to admin123\n';
+"
+```
 
 ## Production Considerations
 

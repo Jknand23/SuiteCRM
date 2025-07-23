@@ -93,6 +93,45 @@ if (isset($_REQUEST['loginErrorMessage'])) {
     }
 }
 
+// Handle OAuth2 error messages
+if (isset($_REQUEST['oauth_error'])) {
+    $oauth_error = $_REQUEST['oauth_error'];
+    $error_message = $_REQUEST['error_message'] ?? '';
+    
+    // Define OAuth2 error messages
+    $oauth_error_messages = [
+        'invalid_provider' => 'Invalid OAuth2 provider specified.',
+        'unsupported_provider' => 'The selected OAuth2 provider is not supported.',
+        'authorization_failed' => 'OAuth2 authorization failed. Please try again.',
+        'missing_code' => 'OAuth2 authorization code is missing.',
+        'missing_state' => 'OAuth2 state parameter is missing.',
+        'session_error' => 'OAuth2 session data is missing. Please try again.',
+        'invalid_state' => 'Invalid OAuth2 state parameter. Possible security issue.',
+        'callback_failed' => 'OAuth2 callback processing failed.',
+        'user_load_failed' => 'Failed to load user account after OAuth2 authentication.',
+        'callback_error' => 'An error occurred during OAuth2 authentication.',
+    ];
+    
+    // Get error message
+    if (!empty($error_message)) {
+        $oauth_display_message = $error_message;
+    } elseif (isset($oauth_error_messages[$oauth_error])) {
+        $oauth_display_message = $oauth_error_messages[$oauth_error];
+    } else {
+        $oauth_display_message = 'OAuth2 authentication error occurred. Please try traditional login.';
+    }
+    
+    // Log OAuth2 error
+    $GLOBALS['log']->warning('OAuth2 login error displayed to user', [
+        'error_code' => $oauth_error,
+        'error_message' => $oauth_display_message,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+    ]);
+    
+    // Assign error message to template
+    $sugar_smarty->assign('LOGIN_ERROR_MESSAGE', $oauth_display_message);
+}
+
 $lvars = $GLOBALS['app']->getLoginVars();
 $sugar_smarty->assign('LOGIN_VARS', $lvars);
 foreach ((array)$lvars as $k => $v) {

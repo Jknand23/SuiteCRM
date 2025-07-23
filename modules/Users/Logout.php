@@ -49,6 +49,29 @@ if (!defined('sugarEntry') || !sugarEntry) {
 $current_user->setPreference('lastTheme', $theme);
 $GLOBALS['current_user']->call_custom_logic('before_logout');
 
+// Handle OAuth2 logout
+try {
+    require_once 'lib/Authentication/OAuth2AuthenticationProvider.php';
+    
+    $oauth2Provider = new \SuiteCRM\Authentication\OAuth2AuthenticationProvider();
+    
+    // Check if user has OAuth2 session and clean it up
+    if (!empty($_SESSION['authenticated_user_id'])) {
+        $userId = $_SESSION['authenticated_user_id'];
+        $oauth2Provider->logoutOAuth2User($userId);
+        
+        $GLOBALS['log']->info('OAuth2 cleanup completed for user logout', [
+            'user_id' => $userId
+        ]);
+    }
+} catch (Exception $e) {
+    // Log error but don't prevent logout
+    $GLOBALS['log']->warning('OAuth2 logout cleanup failed: ' . $e->getMessage(), [
+        'user_id' => $_SESSION['authenticated_user_id'] ?? 'unknown',
+        'exception' => get_class($e)
+    ]);
+}
+
 if (method_exists($authController->authController, 'preLogout')) {
     $authController->authController->preLogout();
 }

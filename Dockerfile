@@ -65,6 +65,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . /var/www/html/
 
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
@@ -88,9 +91,6 @@ session.gc_maxlifetime = 1440\n\
 date.timezone = UTC\n\
 opcache.enable = 1\n\
 opcache.memory_consumption = 128' > /usr/local/etc/php/php.ini
-
-# Install composer dependencies
-RUN composer install --no-dev --optimize-autoloader
 
 # Expose port
 EXPOSE 80

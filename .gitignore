@@ -126,3 +126,4 @@ codeception.yml
 .env
 .env.test
 .env.dev
+.env.docker

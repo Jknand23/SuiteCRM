@@ -100,4 +100,6 @@ $entry_point_registry = array(
     'setImapTestSettings' => ['file' => 'include/Imap/ImapTestSettingsEntry.php', 'auth' => true],
     'redirectToExternalOAuth' => ['file' => 'modules/ExternalOAuthConnection/entrypoint/redirectToExternalOAuth.php', 'auth' => true],
     'setExternalOAuthToken' => ['file' => 'modules/ExternalOAuthConnection/entrypoint/setExternalOAuthToken.php', 'auth' => true],
+    'oauth2Authorize' => ['file' => 'lib/Authentication/entrypoints/oauth2Authorize.php', 'auth' => false],
+    'oauth2Callback' => ['file' => 'lib/Authentication/entrypoints/oauth2Callback.php', 'auth' => false],
 );
