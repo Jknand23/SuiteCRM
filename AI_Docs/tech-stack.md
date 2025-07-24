@@ -208,42 +208,42 @@ Instead of "upgrade first, build later," we **upgrade technology BY building fea
 
 ---
 
-### 6. Slim Framework 4 - Enhanced API Layer
-**Enables**: Create Campaign Lead API Endpoint
+### 6. API Documentation & Enhancement - OpenAPI/Swagger
+**Enables**: Comprehensive API Documentation System
 
 **Why This Choice**:
-- Direct upgrade from existing Slim 3
-- Better PSR compliance and middleware support
-- Improved routing and dependency injection
-- Enhanced request/response handling
+- Build upon existing stable Slim 3 infrastructure
+- SuiteCRM has extensive API foundation with structured endpoints
+- OpenAPI generates documentation from existing standardized responses
+- Interactive documentation improves developer experience
 
 **Feature Integration**:
-- **API Endpoint**: Modern RESTful endpoint with validation
-- **Implementation**: Upgrade framework, build new API routes
+- **API Documentation**: Generate docs from existing `BaseController.php` patterns
+- **Implementation**: Enhance existing API with documentation and security middleware
 
 #### Best Practices
-- **Middleware**: Use middleware for cross-cutting concerns (auth, logging, CORS)
-- **Dependency Injection**: Leverage DI container for better testability
-- **Error Handling**: Implement consistent error handling middleware
-- **Validation**: Use dedicated validation libraries (Respect\Validation)
+- **Documentation-First**: Generate OpenAPI specs from existing endpoint patterns
+- **Interactive Docs**: Create user-friendly documentation interface for developers
+- **Automated Updates**: Integrate documentation generation with existing build processes
+- **Validation Enhancement**: Add input validation documentation to existing endpoints
 
 #### Limitations & Constraints
-- **Learning Curve**: Developers need to understand PSR standards and DI patterns
-- **Performance**: Additional abstraction layer may add slight overhead
-- **Complexity**: Can be overkill for simple API endpoints
-- **Breaking Changes**: Upgrade from Slim 3 requires code changes
+- **Existing Structure**: Must work within current Slim 3 architecture patterns
+- **Documentation Accuracy**: Generated docs must accurately reflect actual API behavior
+- **Maintenance Overhead**: Documentation needs to stay synchronized with code changes
+- **Learning Curve**: Team needs to understand OpenAPI specification format
 
 #### Common Pitfalls
-- **Avoid**: Tightly coupling routes to database queries (use service layer)
-- **Avoid**: Inconsistent API response formats across endpoints
-- **Avoid**: Missing input validation and sanitization
-- **Route Conflicts**: Be careful with route ordering and parameter conflicts
+- **Avoid**: Replacing existing working API infrastructure
+- **Avoid**: Documentation that doesn't match actual endpoint behavior
+- **Avoid**: Overcomplicating simple endpoint documentation
+- **Breaking Changes**: Don't modify existing endpoint contracts for documentation
 
 #### Conventions
-- Follow RESTful URL patterns: `/api/v1/campaigns/{id}/leads`
-- Use HTTP status codes correctly (200, 201, 400, 401, 404, 500)
-- Implement consistent JSON response format with metadata
-- Version APIs from the start: `/api/v1/`
+- Document existing URL patterns: `/Api/V8/module/{module}/record/{id}`
+- Use existing HTTP status code patterns from `BaseController.php`
+- Follow current JSON response format from existing standardized responses
+- Maintain existing authentication patterns and document them clearly
 
 ## 🔄 Feature-Technology Matrix
 
@@ -252,7 +252,7 @@ Instead of "upgrade first, build later," we **upgrade technology BY building fea
 | Interactive Lead List | Alpine.js | Bootstrap 5 | Reactive filtering in existing templates |
 | OAuth2/SSO | OAuth2-Client | Slim 4 | New auth flow alongside existing |
 | Real-time Notifications | SSE | Alpine.js | Event stream + reactive UI updates |
-| Campaign Lead API | Slim 4 | - | New API endpoint with modern patterns |
+| API Documentation System | OpenAPI/Swagger | Existing Slim 3 | Generate docs from existing API patterns |
 | Dashboard Widget | Alpine.js | Bootstrap 5 | Reactive data display components |
 | Rich Text Notes | TinyMCE 6 | - | Enhanced editor in existing forms |
 
@@ -354,7 +354,7 @@ Instead of "upgrade first, build later," we **upgrade technology BY building fea
 - [TinyMCE 6 Documentation](https://www.tiny.cloud/docs/tinymce/6/)
 - [Server-Sent Events MDN](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 - [League OAuth2 Client](https://oauth2-client.thephpleague.com/)
-- [Slim Framework 4](https://www.slimframework.com/docs/v4/)
+- [OpenAPI/Swagger Documentation](https://swagger.io/docs/)
 
 ### Training Resources
 - Focus on practical examples within SuiteCRM context

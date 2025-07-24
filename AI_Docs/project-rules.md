@@ -219,7 +219,7 @@ Every file must begin with a comprehensive header:
  * - Comprehensive error handling and logging
  * 
  * Dependencies:
- * - Slim Framework 4 for routing
+ * - Existing Slim 3 for routing (enhanced with documentation)
  * - League/OAuth2-Client for authentication
  * - Monolog for logging
  * - SuiteCRM BeanFactory for data persistence

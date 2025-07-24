@@ -127,7 +127,7 @@ This document defines the user journeys through the modernized SuiteCRM applicat
 3. Feature Configuration
    ├── Dashboard Widget Configuration (NEW) - Campaign Progress setup
    ├── Lead List View Customization (NEW) - Column permissions
-   ├── API Endpoint Management (NEW) - Campaign Lead API security
+   ├── API Documentation Management (NEW) - Interactive API documentation
    └── Notification Settings (NEW) - Real-time message configuration
    ↓
 4. User Role Management
