@@ -44,6 +44,20 @@ if (!defined('sugarEntry')) {
 
 include 'include/MVC/preDispatch.php';
 $startTime = microtime(true);
+
+// Check if installer needs to run
+if (!file_exists('config.php') || (file_exists('config.php') && filesize('config.php') < 100)) {
+    header('Location: install.php');
+    exit();
+}
+
+// Check if installer is unlocked
+require_once 'config.php';
+if (isset($sugar_config['installer_locked']) && $sugar_config['installer_locked'] == false) {
+    header('Location: install.php');
+    exit();
+}
+
 require_once 'include/entryPoint.php';
 ob_start();
 require_once 'include/MVC/SugarApplication.php';

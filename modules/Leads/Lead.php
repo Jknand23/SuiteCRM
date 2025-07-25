@@ -82,6 +82,8 @@ class Lead extends Person implements EmailInterface
     public $phone_work;
     public $phone_other;
     public $phone_fax;
+    public $assistant;
+    public $assistant_phone;
     public $refered_by;
     public $email1;
     public $email2;
@@ -132,6 +134,11 @@ class Lead extends Person implements EmailInterface
     public $alt_address_street_3;
     public $primary_address_street_2;
     public $primary_address_street_3;
+    public $event_invite_id;
+    public $accept_status_id;
+    public $event_status_id;
+    public $jjwg_maps_address_c;
+    public $jjwg_maps_geocode_status_c;
 
 
     public $table_name = "leads";
@@ -516,9 +523,9 @@ class Lead extends Person implements EmailInterface
             if (!empty($value['source']) && $value['source'] == 'custom_fields') {
                 if (!empty($tempBean->field_defs[$field]) && isset($tempBean->field_defs[$field])) {
                     $label = $tempBean->field_defs[$field]['vname'];
-                    if(isset($mod_strings[$label])){
+                    if (isset($mod_strings[$label])) {
                         $label = $mod_strings[$label];
-                    } elseif(isset($app_strings[$label])){
+                    } elseif (isset($app_strings[$label])) {
                         $label = $app_strings[$label];
                     }
                     $form .= "<tr><td nowrap colspan='4' class='dataLabel'>".$label.":";

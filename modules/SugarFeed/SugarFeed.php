@@ -66,6 +66,9 @@ class SugarFeed extends Basic
     public $assigned_user_id;
     public $assigned_user_name;
     public $assigned_user_link;
+    public $team_set_id;
+    public $link_url;
+    public $link_type;
 
     public function __construct()
     {
@@ -264,7 +267,7 @@ class SugarFeed extends Basic
         $record_assigned_user_id=false,
         $link_type=false,
         $link_url=false
-        ) {
+    ) {
         $feed = BeanFactory::newBean('SugarFeed');
         if ((empty($text) && empty($link_url)) || !$feed->ACLAccess('save', true)) {
             $GLOBALS['log']->error('Unable to save SugarFeed record (missing data or no ACL access)');
@@ -361,7 +364,7 @@ class SugarFeed extends Basic
 
         if (file_exists('custom/modules/SugarFeed/linkHandlers/'.$linkName.'.php')) {
             require_once('custom/modules/SugarFeed/linkHandlers/'.$linkName.'.php');
-        } elseif(!file_exists('modules/SugarFeed/linkHandlers/'.$linkName.'.php')) {
+        } elseif (!file_exists('modules/SugarFeed/linkHandlers/'.$linkName.'.php')) {
             return false;
         } else {
             require_once('modules/SugarFeed/linkHandlers/'.$linkName.'.php');
@@ -482,21 +485,19 @@ class SugarFeed extends Basic
         //Fix #9875 SugarFeed shows 0 seconds ago and negative interval for certain datetime formats
         //Use proper user datetime format to convert datetime string to timestamp
         $user_format=$timedate->get_date_time_format();
-		$first=date_create_from_format($user_format,$currentTime);
-        if(empty($first)){
+        $first=date_create_from_format($user_format, $currentTime);
+        if (empty($first)) {
             LoggerManager::getLogger()->warn('SugarFeed getTimeLapse: Could not fetch currentTime ');
             $first=0;
-        }
-        else{
+        } else {
             $first=$first->getTimestamp();
         }
 
-        $second=date_create_from_format($user_format,$startDate);
-        if(empty($second)){
+        $second=date_create_from_format($user_format, $startDate);
+        if (empty($second)) {
             LoggerManager::getLogger()->warn('SugarFeed getTimeLapse: Could not fetch startDate ');
             $second=0;
-        }
-        else{
+        } else {
             $second=$second->getTimestamp();
         }
 

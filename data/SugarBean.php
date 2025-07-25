@@ -2521,15 +2521,15 @@ class SugarBean
                 }
 
                 // Trim name & varchar type values on save when the value is not null
-                if (isset($def['type']) && in_array($def['type'], ['name', 'varchar']) && !is_null($this->$key)) {
+                if (isset($def['type']) && in_array($def['type'], ['name', 'varchar']) && isset($this->$key) && !is_null($this->$key)) {
                     $this->$key = trim($this->$key);
                 }
 
-                if (isset($def['type']) && ($def['type'] == 'html' || $def['type'] == 'longhtml')) {
+                if (isset($def['type']) && ($def['type'] == 'html' || $def['type'] == 'longhtml') && isset($this->$key)) {
                     $this->$key = purify_html($this->$key, ['HTML.ForbiddenElements' => ['iframe' => true]]);
                 } elseif (
                     (strpos((string) $type, 'char') !== false || strpos((string) $type, 'text') !== false || $type == 'enum') &&
-                    !empty($this->$key)
+                    isset($this->$key) && !empty($this->$key)
                 ) {
                     $this->$key = purify_html($this->$key, ['HTML.ForbiddenElements' => ['iframe' => true]]);
                 }

@@ -118,6 +118,12 @@ class Contact extends Person implements EmailInterface
     public $note_id;
     public $meeting_id;
     public $call_id;
+    public $event_invite_id;
+    public $event_status_id;
+    public $joomla_account_id;
+    public $joomla_account_access;
+    public $jjwg_maps_address_c;
+    public $jjwg_maps_geocode_status_c;
     public $email_id;
     public $assigned_user_name;
     public $accept_status;
@@ -260,7 +266,7 @@ class Contact extends Person implements EmailInterface
             $parentbean,
             $singleSelect,
             $ifListForExport
-            );
+        );
     }
 
 

@@ -1,0 +1,11 @@
+AI_Docs/phase-1-test-results.md
+AI_Docs/phases/phase-1-foundation-authentication.md
+composer.lock
+config.php.backup
+data/SugarBean.php
+docker/mysql/init/01-oauth2-tables.sql
+index.php
+modules/Contacts/Contact.php
+modules/Leads/Lead.php
+modules/SugarFeed/SugarFeed.php
+themes/SuiteP/css/Dawn/style.css
