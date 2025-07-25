@@ -152,7 +152,68 @@ $app->group('', function () use ($app) {
         /**
          * Get filtered leads data with advanced criteria
          */
-        $app->post('/leads/filtered', 'Api\V8\Controller\LeadFilterController:getFilteredLeads');
+        $app->get('/leads/filtered', 'Api\V8\Controller\LeadFilterController:getFilteredLeads');
+
+        /**
+         * User Preference Management Endpoints - Phase 2 Column Management System
+         */
+        
+        /**
+         * Save user preference
+         */
+        $app->post('/user/preferences', 'Api\V8\Controller\UserPreferenceController:savePreference');
+
+        /**
+         * Load user preference by key
+         */
+        $app->get('/user/preferences/{key}', 'Api\V8\Controller\UserPreferenceController:loadPreference');
+
+        /**
+         * Delete user preference by key
+         */
+        $app->delete('/user/preferences/{key}', 'Api\V8\Controller\UserPreferenceController:deletePreference');
+
+        /**
+         * Lead Bulk Action Endpoints - Phase 2 Step 4
+         */
+        
+        /**
+         * Bulk assign leads to user
+         */
+        $app->post('/leads/bulk-assign', 'Api\V8\Controller\LeadBulkActionController:bulkAssignLeads');
+        
+        /**
+         * Bulk update lead status
+         */
+        $app->post('/leads/bulk-update-status', 'Api\V8\Controller\LeadBulkActionController:bulkUpdateStatus');
+        
+        /**
+         * Bulk add leads to campaign
+         */
+        $app->post('/leads/bulk-add-to-campaign', 'Api\V8\Controller\LeadBulkActionController:bulkAddToCampaign');
+        
+        /**
+         * Bulk delete leads
+         */
+        $app->delete('/leads/bulk-delete', 'Api\V8\Controller\LeadBulkActionController:bulkDeleteLeads');
+        
+        /**
+         * Lead Export Endpoints - Phase 2 Step 5
+         */
+        
+        /**
+         * Export filtered leads to CSV/Excel
+         */
+        $app->get('/leads/export', 'Api\V8\Controller\LeadExportController:exportFilteredLeads');
+        
+        /**
+         * Real-time Updates - Phase 2 Step 5
+         */
+        
+        /**
+         * Server-Sent Events stream for real-time lead updates
+         */
+        $app->get('/leads/sse-stream', 'Api\V8\Controller\LeadSSEController:streamLeadUpdates');
 
         // add custom routes
         $app->group('/custom', function () use ($app) {

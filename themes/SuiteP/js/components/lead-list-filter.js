@@ -77,7 +77,7 @@ document.addEventListener('alpine:init', () => {
                 this.isLoading = true;
                 
                 // Load campaigns
-                const campaignResponse = await fetch('/Api/V8/Leads/campaigns/list', {
+                const campaignResponse = await fetch('/Api/V8/leads/campaigns/list', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ document.addEventListener('alpine:init', () => {
                 }
                 
                 // Load industries
-                const industryResponse = await fetch('/Api/V8/Leads/industries/list', {
+                const industryResponse = await fetch('/Api/V8/leads/industries/list', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

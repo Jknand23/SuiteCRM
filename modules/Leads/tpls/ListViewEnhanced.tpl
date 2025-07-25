@@ -34,6 +34,16 @@
     {/if}
 {/if}
 
+{* Include Lead Table View Component - Phase 2 Feature 1 Step 1 *}
+{if $pageData.bean.moduleDir == 'Leads'}
+    {* Load required JavaScript components *}
+    <script src="themes/SuiteP/js/components/lead-table-view.js"></script>
+    <script src="themes/SuiteP/js/components/lead-list-filter.js"></script>
+    
+    {* Include the interactive lead table *}
+    {include file='themes/SuiteP/tpls/components/lead-table-view.tpl'}
+{/if}
+
 {* Include standard column filter dialog *}
 {include file='include/ListView/ListViewColumnsFilterDialog.tpl'}
 <script type='text/javascript' src='{sugar_getjspath file='include/javascript/popup_helper.js'}'></script>

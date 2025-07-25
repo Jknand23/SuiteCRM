@@ -113,14 +113,24 @@
         
         {* Industry Filter *}
         <div class="col-md-4">
-            <label for="industry-filter" class="form-label small fw-bold">Industry</label>
+            <label for="industry-filter" class="form-label small fw-bold">
+                Industry 
+                <small class="text-muted">(Marketing/Advertising Priority)</small>
+            </label>
             <select class="form-select" 
                     id="industry-filter"
                     x-model="selectedIndustry">
                 <option value="">All Industries</option>
-                <template x-for="industry in $store.leadFilters.availableIndustries" :key="industry.value">
-                    <option :value="industry.value" x-text="industry.label"></option>
-                </template>
+                <optgroup label="Marketing/Advertising Focus">
+                    <template x-for="industry in $store.leadFilters.availableIndustries.filter(i => i.isPriority)" :key="'priority-' + industry.value">
+                        <option :value="industry.value" x-text="industry.label"></option>
+                    </template>
+                </optgroup>
+                <optgroup label="Other Industries">
+                    <template x-for="industry in $store.leadFilters.availableIndustries.filter(i => !i.isPriority)" :key="'other-' + industry.value">
+                        <option :value="industry.value" x-text="industry.label"></option>
+                    </template>
+                </optgroup>
             </select>
         </div>
     </div>

@@ -27,15 +27,14 @@
  * @since 2024-01-15
  */
 
-namespace Api\V8\Controller;
+namespace Api\V8\Controllers;
 
+use Api\Core\Controllers\BaseController;
+use Api\Core\Loader\ControllerFactory;
 use Exception;
 use Lead;
 use Campaign;
 use SugarBean;
-use DBManagerFactory;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Lead Filter Controller
@@ -50,9 +49,6 @@ class LeadFilterController extends BaseController
     
     /** @var Campaign $campaignModel Campaign model instance */
     private Campaign $campaignModel;
-    
-    /** @var \DBManager $db Database connection instance */
-    private $db;
     
     /** @var array $validSortFields Allowed sort fields */
     private array $validSortFields = [
@@ -80,33 +76,42 @@ class LeadFilterController extends BaseController
         parent::__construct();
         $this->leadModel = new Lead();
         $this->campaignModel = new Campaign();
-        $this->db = DBManagerFactory::getInstance();
     }
     
     /**
      * Gets filtered lead data with pagination and sorting
      *
-     * @param Request $request The request object
-     * @param Response $response The response object
-     * @param array $args The route arguments
+     * GET /Api/V8/Leads/filtered
      *
-     * @return Response JSON response with lead data and metadata
+     * Query Parameters:
+     * - page: Page number (default: 1)
+     * - limit: Items per page (default: 20, max: 100)
+     * - sort: Sort field (default: date_modified)
+     * - direction: Sort direction (asc/desc, default: desc)
+     * - search: Text search in name/email fields
+     * - campaign_id: Filter by campaign association
+     * - industry: Filter by industry
+     * - activity_days: Filter leads with no activity in X days
+     * - activity_type: Type of activity to check (calls, emails, meetings, tasks, any)
+     * - filter_logic: Combination logic (and/or, default: and)
+     *
+     * @return array JSON response with lead data and metadata
+     * @throws Exception When data retrieval fails
      * @since 1.0.0
      */
-    public function getFilteredLeads(Request $request, Response $response, array $args): Response
+    public function getFilteredLeads(): array
     {
         try {
             // Check permissions
             if (!$this->leadModel->ACLAccess('list')) {
                 return $this->generateErrorResponse(
-                    $response,
                     'Access denied: Insufficient permissions to list leads',
                     403
                 );
             }
             
             // Get and validate parameters from GET query string
-            $params = $this->getValidatedParameters($request);
+            $params = $this->getValidatedParameters();
             
             // Build query with filters
             $queryBuilder = $this->buildLeadQuery($params);
@@ -120,7 +125,7 @@ class LeadFilterController extends BaseController
             // Format response data
             $formattedLeads = $this->formatLeadData($leads);
             
-            return $this->generateSuccessResponse($response, [
+            return $this->generateSuccessResponse([
                 'data' => $formattedLeads,
                 'totalCount' => $totalCount,
                 'page' => $params['page'],
@@ -129,10 +134,13 @@ class LeadFilterController extends BaseController
                 'filters' => $this->getActiveFilters($params)
             ]);
         } catch (Exception $e) {
-            $GLOBALS['log']->error('Error retrieving filtered leads: ' . $e->getMessage());
+            $this->logger->error('Error retrieving filtered leads', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'params' => $_GET
+            ]);
             
             return $this->generateErrorResponse(
-                $response,
                 'Failed to retrieve leads: ' . $e->getMessage(),
                 500
             );
@@ -142,19 +150,16 @@ class LeadFilterController extends BaseController
     /**
      * Gets list of available campaigns for filtering
      *
-     * @param Request $request The request object
-     * @param Response $response The response object
-     * @param array $args The route arguments
+     * GET /Api/V8/Leads/campaigns/list
      *
-     * @return Response JSON response with campaign list
+     * @return array JSON response with campaign list
      * @since 1.0.0
      */
-    public function getCampaignsList(Request $request, Response $response, array $args): Response
+    public function getCampaignsList(): array
     {
         try {
             if (!$this->campaignModel->ACLAccess('list')) {
                 return $this->generateErrorResponse(
-                    $response,
                     'Access denied: Insufficient permissions to list campaigns',
                     403
                 );
@@ -170,12 +175,11 @@ class LeadFilterController extends BaseController
                 ];
             }, $campaigns ?: []);
             
-            return $this->generateSuccessResponse($response, [
+            return $this->generateSuccessResponse([
                 'data' => $formattedCampaigns
             ]);
         } catch (Exception $e) {
             return $this->generateErrorResponse(
-                $response,
                 'Failed to retrieve campaigns: ' . $e->getMessage(),
                 500
             );
@@ -185,14 +189,12 @@ class LeadFilterController extends BaseController
     /**
      * Gets list of available industries for filtering with marketing/advertising focus
      *
-     * @param Request $request The request object
-     * @param Response $response The response object
-     * @param array $args The route arguments
+     * GET /Api/V8/Leads/industries/list
      *
-     * @return Response JSON response with prioritized industry list for marketing/advertising
+     * @return array JSON response with prioritized industry list for marketing/advertising
      * @since 1.0.0
      */
-    public function getIndustriesList(Request $request, Response $response, array $args): Response
+    public function getIndustriesList(): array
     {
         try {
             global $app_list_strings;
@@ -248,13 +250,12 @@ class LeadFilterController extends BaseController
                 }
             }
             
-            return $this->generateSuccessResponse($response, [
+            return $this->generateSuccessResponse([
                 'data' => $formattedIndustries,
                 'prioritizedCount' => count($marketingFocusIndustries)
             ]);
         } catch (Exception $e) {
             return $this->generateErrorResponse(
-                $response,
                 'Failed to retrieve industries: ' . $e->getMessage(),
                 500
             );
@@ -264,26 +265,23 @@ class LeadFilterController extends BaseController
     /**
      * Validates and sanitizes request parameters
      *
-     * @param Request $request The request object
      * @return array Validated parameters
      * @throws Exception When validation fails
      * @since 1.0.0
      */
-    private function getValidatedParameters(Request $request): array
+    private function getValidatedParameters(): array
     {
-        $queryParams = $request->getQueryParams();
-        
         $params = [
-            'page' => max(1, intval($queryParams['page'] ?? 1)),
-            'limit' => min(100, max(1, intval($queryParams['limit'] ?? 20))),
-            'sort' => $queryParams['sort'] ?? 'date_modified',
-            'direction' => $queryParams['direction'] ?? 'desc',
-            'search' => trim($queryParams['search'] ?? ''),
-            'campaign_id' => trim($queryParams['campaign_id'] ?? ''),
-            'industry' => trim($queryParams['industry'] ?? ''),
-            'activity_days' => intval($queryParams['activity_days'] ?? 0),
-            'activity_type' => trim($queryParams['activity_type'] ?? 'any'),
-            'filter_logic' => trim($queryParams['filter_logic'] ?? 'and')
+            'page' => max(1, intval($_GET['page'] ?? 1)),
+            'limit' => min(100, max(1, intval($_GET['limit'] ?? 20))),
+            'sort' => $_GET['sort'] ?? 'date_modified',
+            'direction' => $_GET['direction'] ?? 'desc',
+            'search' => trim($_GET['search'] ?? ''),
+            'campaign_id' => trim($_GET['campaign_id'] ?? ''),
+            'industry' => trim($_GET['industry'] ?? ''),
+            'activity_days' => intval($_GET['activity_days'] ?? 0),
+            'activity_type' => trim($_GET['activity_type'] ?? 'any'),
+            'filter_logic' => trim($_GET['filter_logic'] ?? 'and')
         ];
         
         // Validate sort field
@@ -601,40 +599,5 @@ class LeadFilterController extends BaseController
         $term = substr($term, 0, 100);
         
         return trim($term);
-    }
-    
-    /**
-     * Generates standardized success response
-     *
-     * @param Response $response The response object
-     * @param array $data Response data
-     * @return Response JSON response
-     * @since 1.0.0
-     */
-    private function generateSuccessResponse(Response $response, array $data): Response
-    {
-        return $response->withJson([
-            'success' => true,
-            'data' => $data,
-            'timestamp' => date('c')
-        ], 200);
-    }
-    
-    /**
-     * Generates standardized error response
-     *
-     * @param Response $response The response object
-     * @param string $message Error message
-     * @param int $statusCode HTTP status code
-     * @return Response JSON response
-     * @since 1.0.0
-     */
-    private function generateErrorResponse(Response $response, string $message, int $statusCode = 500): Response
-    {
-        return $response->withJson([
-            'success' => false,
-            'error' => $message,
-            'timestamp' => date('c')
-        ], $statusCode);
     }
 }
