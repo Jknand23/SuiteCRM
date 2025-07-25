@@ -15,9 +15,21 @@ services:
       - ./include:/var/www/html/include
       - ./themes:/var/www/html/themes
       - ./modules:/var/www/html/modules
+      - ./Api:/var/www/html/Api
       - ./config.php:/tmp/config.php:ro
       - ./config_override.php:/tmp/config_override.php:ro
       - ./docker-entrypoint.sh:/docker-entrypoint.sh:ro
+      # Testing infrastructure
+      - ./tests:/var/www/html/tests
+      - ./vendor:/var/www/html/vendor
+      - ./composer.json:/var/www/html/composer.json:ro
+      - ./codeception.dist.yml:/var/www/html/codeception.dist.yml:ro
+      # Quality tool configuration files
+      - ./phpstan.neon:/var/www/html/phpstan.neon:ro
+      - ./rector.php:/var/www/html/rector.php:ro
+      - ./validate-new-components.php:/var/www/html/validate-new-components.php:ro
+      - ./test-feature-4-step-3.php:/var/www/html/test-feature-4-step-3.php:ro
+      - ./.php_cs.dist:/var/www/html/.php_cs.dist:ro
     env_file:
       - .env.docker
     environment:

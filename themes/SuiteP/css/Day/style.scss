@@ -1,6 +1,7 @@
 // Core variables and mixins
 @import "color-palette";
 @import "variables";
+@import "custom-properties";  // CSS Custom Properties Layer (additive enhancement)
 @import "icons";
 @import "../bootstrap/mixins";
 
@@ -82,4 +83,8 @@
 @import '../suitep-base/studio';
 @import '../suitep-base/tinymce.scss';
 @import '../suitep-base/jstree';
+
+// Bootstrap 5 Namespaced System (Step 5 - Phase 1, Feature 2)
+// Modern Bootstrap 5 components with .bs5- prefix for zero conflicts
+@import "../bootstrap5-namespaced/bootstrap5-namespaced";
 //

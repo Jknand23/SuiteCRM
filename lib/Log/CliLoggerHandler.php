@@ -51,7 +51,6 @@ use Monolog\Logger;
  *
  * This logger is ideal for CLIs as it is minimal and offers nice colour formatting.
  */
-#[\AllowDynamicProperties]
 class CliLoggerHandler extends StreamHandler
 {
     /**

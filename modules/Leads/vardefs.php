@@ -601,6 +601,16 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
                         'listview' => false,
                     ),
             ),
+        'assistant' =>
+            array(
+                'name' => 'assistant',
+                'vname' => 'LBL_ASSISTANT',
+                'type' => 'varchar',
+                'len' => '75',
+                'unified_search' => false,
+                'importable' => 'false',
+                'comment' => 'Name of the assistant of the lead',
+            ),
 
     )
 , 'indices' => array(

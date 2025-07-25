@@ -46,6 +46,7 @@ use Api\V8\JsonApi\Response\AttributeResponse;
 use Api\V8\JsonApi\Response\DataResponse;
 use Api\V8\JsonApi\Response\DocumentResponse;
 use Api\V8\Param\GetFieldListParams;
+use Api\V8\Service\OpenApiDocumentationService;
 use Slim\Http\Request;
 use SuiteCRM\Exception\Exception;
 use SuiteCRM\Exception\NotAllowedException;
@@ -68,6 +69,11 @@ class MetaService
      */
     private $moduleListProvider;
 
+    /**
+     * @var OpenApiDocumentationService
+     */
+    private $openApiService;
+
     private static $allowedVardefFields = [
         'type',
         'dbType',
@@ -82,15 +88,19 @@ class MetaService
     ];
 
     /**
-     * UserService constructor.
+     * MetaService constructor.
      * @param BeanManager $beanManager
+     * @param ModuleListProvider $moduleListProvider
+     * @param OpenApiDocumentationService $openApiService
      */
     public function __construct(
         BeanManager $beanManager,
-        ModuleListProvider $moduleListProvider
+        ModuleListProvider $moduleListProvider,
+        OpenApiDocumentationService $openApiService
     ) {
         $this->beanManager = $beanManager;
         $this->moduleListProvider = $moduleListProvider;
+        $this->openApiService = $openApiService;
     }
 
     /**
@@ -197,11 +207,38 @@ class MetaService
     /**
      * Build the response with the swagger schema.
      *
-     * @return DocumentResponse
+     * Enhanced to provide dynamic OpenAPI documentation while maintaining
+     * backward compatibility with existing static swagger.json file.
+     *
+     * @return array Complete OpenAPI specification
      * @throws NotFoundException
      * @throws Exception
      */
     public function getSwaggerSchema()
+    {
+        try {
+            // Generate dynamic OpenAPI specification using new service
+            $dynamicSchema = $this->openApiService->generateDynamicSchema();
+            
+            // Try to load static schema for backward compatibility
+            $staticSchema = $this->getStaticSwaggerSchema();
+            
+            // Merge static and dynamic schemas (dynamic takes precedence)
+            return $this->mergeSchemas($staticSchema, $dynamicSchema);
+        } catch (Exception $e) {
+            // Fallback to static schema if dynamic generation fails
+            return $this->getStaticSwaggerSchema();
+        }
+    }
+    
+    /**
+     * Loads the static swagger.json file for backward compatibility
+     *
+     * @return array Static OpenAPI specification
+     * @throws NotFoundException When static file not found
+     * @throws Exception When static file cannot be read
+     */
+    private function getStaticSwaggerSchema(): array
     {
         $path = __DIR__ . '/../../docs/swagger/swagger.json';
         if (!file_exists($path)) {
@@ -219,5 +256,55 @@ class MetaService
         }
 
         return json_decode($swaggerFile, true);
+    }
+    
+    /**
+     * Merges static and dynamic OpenAPI schemas with dynamic taking precedence
+     *
+     * @param array $staticSchema Static OpenAPI schema from file
+     * @param array $dynamicSchema Dynamic OpenAPI schema from service
+     *
+     * @return array Merged OpenAPI specification
+     */
+    private function mergeSchemas(array $staticSchema, array $dynamicSchema): array
+    {
+        // Start with dynamic schema as base (more accurate and up-to-date)
+        $mergedSchema = $dynamicSchema;
+        
+        // Preserve specific static information if present
+        if (isset($staticSchema['info']['description'])) {
+            $mergedSchema['info']['description'] = $staticSchema['info']['description'];
+        }
+        
+        // Merge paths - dynamic takes precedence but preserve any static-only paths
+        if (isset($staticSchema['paths'])) {
+            foreach ($staticSchema['paths'] as $path => $pathInfo) {
+                if (!isset($mergedSchema['paths'][$path])) {
+                    $mergedSchema['paths'][$path] = $pathInfo;
+                }
+            }
+        }
+        
+        // Merge components - dynamic takes precedence
+        if (isset($staticSchema['components'])) {
+            if (!isset($mergedSchema['components'])) {
+                $mergedSchema['components'] = [];
+            }
+            
+            // Merge schemas within components
+            if (isset($staticSchema['components']['schemas'])) {
+                if (!isset($mergedSchema['components']['schemas'])) {
+                    $mergedSchema['components']['schemas'] = [];
+                }
+                
+                foreach ($staticSchema['components']['schemas'] as $schemaName => $schemaDefinition) {
+                    if (!isset($mergedSchema['components']['schemas'][$schemaName])) {
+                        $mergedSchema['components']['schemas'][$schemaName] = $schemaDefinition;
+                    }
+                }
+            }
+        }
+        
+        return $mergedSchema;
     }
 }

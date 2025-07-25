@@ -29,6 +29,13 @@ coverage:
     - service/*.php
     - soap/*.php
     - themes/*.php
+    # Enhanced component coverage paths
+    - Api/V8/Controller/*.php
+    - Api/V8/Middleware/*.php
+    - Api/V8/JsonApi/Response/*.php
+    - Api/V8/Service/*.php
+    - lib/Authentication/*.php
+    - lib/Log/*.php
   exclude:
     - include/SuiteGraphs/*
     - include/social/*

@@ -1,0 +1,37 @@
+{
+  "name": "suitecrm-dev-tools",
+  "version": "1.0.0",
+  "description": "Development tools for SuiteCRM modernization project",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Use vendor/bin/robo build:theme-watch for development'",
+    "build": "echo 'Use vendor/bin/robo build:suite-p for production builds'",
+    "optimize": "echo 'Use vendor/bin/robo optimize:assets for asset optimization'",
+    "verify": "echo 'Use vendor/bin/robo verify:build for build verification'"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "chokidar-cli": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "suitecrm",
+    "sass",
+    "scss",
+    "build-tools",
+    "development"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salesagility/SuiteCRM"
+  },
+  "author": "SuiteCRM Modernization Team",
+  "license": "GPL-3.0"
+} 

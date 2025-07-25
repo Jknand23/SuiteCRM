@@ -39,6 +39,16 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 
 
+/**
+ * AccountsViewDetail - Enhanced DetailView with Template Switching Support
+ *
+ * Extended to support Phase 1, Feature 2, Step 4 enhanced template switching.
+ * Conditionally uses enhanced DetailView template when configuration is enabled
+ * while maintaining 100% backward compatibility.
+ *
+ * @package Accounts
+ * @subpackage Views
+ */
 #[\AllowDynamicProperties]
 class AccountsViewDetail extends ViewDetail
 {
@@ -47,8 +57,79 @@ class AccountsViewDetail extends ViewDetail
         parent::__construct();
     }
 
-
-
+    /**
+     * Enhanced preDisplay method with template switching support
+     *
+     * Conditionally uses enhanced DetailView template based on configuration
+     * while preserving all existing functionality. Falls back to standard
+     * template when enhanced templates are disabled.
+     *
+     * @return void
+     */
+    public function preDisplay()
+    {
+        $metadataFile = $this->getMetaDataFile();
+        $this->dv = new DetailView2();
+        $this->dv->ss =& $this->ss;
+        
+        // Enhanced template switching logic
+        $templatePath = $this->getDetailViewTemplate();
+        
+        $this->dv->setup($this->module, $this->bean, $metadataFile, $templatePath);
+    }
+    
+    /**
+     * Get appropriate DetailView template path
+     *
+     * Returns enhanced template path when configuration is enabled and
+     * enhanced template exists, otherwise returns standard template path.
+     *
+     * @return string Template file path
+     */
+    private function getDetailViewTemplate()
+    {
+        // Check if enhanced templates are enabled
+        if ($this->shouldUseEnhancedTemplate()) {
+            $enhancedTemplate = 'themes/SuiteP/include/DetailView/DetailView-Enhanced.tpl';
+            
+            // Verify enhanced template exists before using
+            if (file_exists($enhancedTemplate)) {
+                return $enhancedTemplate;
+            }
+            
+            // Log warning if enhanced template is configured but missing
+            $GLOBALS['log']->warn('Enhanced template configured but not found: ' . $enhancedTemplate);
+        }
+        
+        // Default to standard template
+        return get_custom_file_if_exists('include/DetailView/DetailView.tpl');
+    }
+    
+    /**
+     * Check if enhanced templates should be used
+     *
+     * Checks global configuration and module-specific settings to determine
+     * if enhanced templates should be used for this view.
+     *
+     * @return bool True if enhanced templates should be used
+     */
+    private function shouldUseEnhancedTemplate()
+    {
+        global $sugar_config;
+        
+        // Check if enhanced templates are globally enabled
+        if (empty($sugar_config['enhanced_templates_enabled'])) {
+            return false;
+        }
+        
+        // Check if this module is in the enabled modules list (if specified)
+        if (!empty($sugar_config['enhanced_templates_modules'])) {
+            return in_array($this->module, $sugar_config['enhanced_templates_modules']);
+        }
+        
+        // If no specific modules list, enable for all modules
+        return true;
+    }
 
     /**
      * display

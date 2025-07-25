@@ -15,10 +15,13 @@ The `MetaService.php` file, located in `Api/V8/Service/`, defines the `MetaServi
 
 ## Constructor
 
+**ENHANCED**: The constructor now includes the new OpenApiDocumentationService for dynamic documentation generation.
+
 The constructor takes the following arguments:
 
 -   `BeanManager $beanManager`: An instance of the `BeanManager`.
 -   `ModuleListProvider $moduleListProvider`: A helper for retrieving a list of modules.
+-   `OpenApiDocumentationService $openApiService`: **NEW** - Service for dynamic OpenAPI documentation generation.
 
 ## Methods
 
@@ -32,7 +35,42 @@ This method retrieves a list of all the fields for a given module. It also prune
 
 ### `getSwaggerSchema()`
 
-This method retrieves the Swagger/OpenAPI 2.0 schema for the API. The schema is a JSON file that provides a complete description of the API's endpoints, parameters, and responses.
+**ENHANCED**: This method now provides dynamic OpenAPI documentation while maintaining backward compatibility.
+
+**New Functionality**:
+- Generates dynamic OpenAPI 3.0 specification using `OpenApiDocumentationService`
+- Merges static and dynamic schemas with dynamic taking precedence
+- Provides fallback to static schema if dynamic generation fails
+- Maintains complete backward compatibility with existing `/V8/meta/swagger.json` endpoint
+
+**Implementation Details**:
+- **Dynamic Generation**: Uses `OpenApiDocumentationService` to generate real-time documentation
+- **Static Fallback**: Preserves existing static swagger.json file as fallback
+- **Schema Merging**: Intelligently merges static and dynamic documentation
+- **Error Handling**: Graceful fallback to static schema on errors
+
+### `getStaticSwaggerSchema()` **NEW PRIVATE METHOD**
+
+Loads the static swagger.json file for backward compatibility. This method preserves the original functionality while enabling the enhanced dynamic documentation system.
+
+**Returns**: Static OpenAPI specification array
+**Throws**: `NotFoundException` when static file not found, `Exception` when file cannot be read
+
+### `mergeSchemas($staticSchema, $dynamicSchema)` **NEW PRIVATE METHOD**
+
+Intelligently merges static and dynamic OpenAPI schemas with dynamic taking precedence. This ensures that dynamic documentation provides the most accurate information while preserving any static-only content.
+
+**Parameters**:
+- `$staticSchema`: Static OpenAPI schema from swagger.json file
+- `$dynamicSchema`: Dynamic OpenAPI schema from OpenApiDocumentationService
+
+**Returns**: Merged OpenAPI specification with optimal combination of static and dynamic content
+
+**Merging Strategy**:
+- Dynamic schema serves as the base (more accurate and current)
+- Static descriptions preserved where available
+- Static-only paths included if not present in dynamic schema
+- Component schemas merged with dynamic taking precedence
 
 ### `checkIfUserHasModuleAccess($module)`
 

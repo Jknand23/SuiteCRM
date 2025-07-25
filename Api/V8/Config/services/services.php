@@ -30,7 +30,8 @@ return CustomLoader::mergeCustomArray([
     Service\MetaService::class => function (Container $container) {
         return new Service\MetaService(
             $container->get(BeanManager::class),
-            $container->get(ModuleListProvider::class)
+            $container->get(ModuleListProvider::class),
+            $container->get(Service\OpenApiDocumentationService::class)
         );
     },
     Service\ListViewService::class => function (Container $container) {
@@ -59,6 +60,12 @@ return CustomLoader::mergeCustomArray([
             $container->get(BeanManager::class),
             $container->get(AttributeObjectHelper::class),
             $container->get(PaginationObjectHelper::class)
+        );
+    },
+    Service\OpenApiDocumentationService::class => function (Container $container) {
+        return new Service\OpenApiDocumentationService(
+            $container->get(BeanManager::class),
+            $container->get(ModuleListProvider::class)
         );
     },
 ], basename(__FILE__));

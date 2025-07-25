@@ -49,7 +49,6 @@ use Monolog\Handler\AbstractProcessingHandler;
 /**
  * Integrates Monolog with the LoggerManager.
  */
-#[\AllowDynamicProperties]
 class SugarLoggerHandler extends AbstractProcessingHandler
 {
 

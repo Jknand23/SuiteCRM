@@ -2,6 +2,12 @@
 
 use Api\V8\Controller\LogoutController;
 use Api\V8\Factory\ParamsMiddlewareFactory;
+use Api\V8\Middleware\CorsMiddleware;
+use Api\V8\Middleware\RateLimitMiddleware;
+use Api\V8\Middleware\ApiKeyAuthMiddleware;
+use Api\V8\Middleware\SecurityHeadersMiddleware;
+use Api\V8\Middleware\EnhancedValidationMiddleware;
+use Api\V8\Middleware\RequestLoggingMiddleware;
 use Api\V8\Param;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Middleware\AuthorizationServerMiddleware;
@@ -48,6 +54,11 @@ $app->group('', function () use ($app) {
          * Get swagger schema
          */
         $app->get('/meta/swagger.json', 'Api\V8\Controller\MetaController:getSwaggerSchema');
+
+        /**
+         * Interactive API Documentation Interface
+         */
+        $app->get('/docs', 'Api\V8\Controller\DocumentationController:getApiDocumentation');
 
         /**
          * Get module records
@@ -124,9 +135,33 @@ $app->group('', function () use ($app) {
             )
             ->add($paramsMiddlewareFactory->bind(Param\DeleteRelationshipParams::class));
 
+        /**
+         * Lead Filter Endpoints - Phase 2 Advanced Filter System
+         */
+        
+        /**
+         * Get available campaigns for filter dropdown
+         */
+        $app->get('/leads/campaigns/list', 'Api\V8\Controller\LeadFilterController:getCampaignsList');
+
+        /**
+         * Get available industries for filter dropdown
+         */
+        $app->get('/leads/industries/list', 'Api\V8\Controller\LeadFilterController:getIndustriesList');
+
+        /**
+         * Get filtered leads data with advanced criteria
+         */
+        $app->post('/leads/filtered', 'Api\V8\Controller\LeadFilterController:getFilteredLeads');
+
         // add custom routes
         $app->group('/custom', function () use ($app) {
             $app = CustomLoader::loadCustomRoutes($app);
         });
-    })->add(new ResourceServerMiddleware($app->getContainer()->get(ResourceServer::class)));
-});
+    })->add(new ResourceServerMiddleware($app->getContainer()->get(ResourceServer::class)))
+      ->add($app->getContainer()->get(ApiKeyAuthMiddleware::class))
+      ->add($app->getContainer()->get(EnhancedValidationMiddleware::class));
+})->add($app->getContainer()->get(RateLimitMiddleware::class))
+  ->add($app->getContainer()->get(CorsMiddleware::class))
+  ->add($app->getContainer()->get(SecurityHeadersMiddleware::class))
+  ->add($app->getContainer()->get(RequestLoggingMiddleware::class));

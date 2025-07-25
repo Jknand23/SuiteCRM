@@ -1,0 +1,436 @@
+/**
+ * @fileoverview Bootstrap 5 Namespaced Button System
+ * 
+ * Modern Bootstrap 5 button components with .bs5-btn prefix to prevent conflicts
+ * with existing Bootstrap 3.3.7 button classes. Features enhanced button variants,
+ * modern states, and integration with SuiteCRM's theme system.
+ * 
+ * Key Features:
+ * - .bs5-btn, .bs5-btn-primary, .bs5-btn-outline-* classes
+ * - Modern button sizing and spacing
+ * - Enhanced focus states and accessibility
+ * - Zero conflicts with existing .btn classes
+ * - Theme-aware color integration
+ * 
+ * Dependencies:
+ * - Bootstrap 5 namespaced variables
+ * - SuiteCRM CSS custom properties theme system
+ * 
+ * @author SuiteCRM Modernization Team
+ * @version 1.0.0
+ * @since 2024-01-16
+ */
+
+// =============================================================================
+// BASE BUTTON STYLES (NAMESPACED)
+// =============================================================================
+
+.bs5-btn {
+  // Modern button foundation
+  display: inline-block;
+  font-family: var(--bs5-body-font-family);
+  font-weight: var(--bs5-font-weight-normal);
+  line-height: var(--bs5-line-height-base);
+  color: var(--bs5-body-color);
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: var(--bs5-border-width) solid transparent;
+  border-radius: var(--bs5-border-radius);
+  background-color: transparent;
+  
+  // Modern button sizing
+  padding: 0.375rem 0.75rem;
+  font-size: var(--bs5-font-size-base);
+  
+  // Enhanced transitions
+  transition: color 0.15s ease-in-out,
+              background-color 0.15s ease-in-out,
+              border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out;
+  
+  // Enhanced focus state for accessibility
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs5-primary), 0.25);
+  }
+  
+  // Disabled state
+  &:disabled,
+  &.bs5-disabled {
+    pointer-events: none;
+    opacity: 0.65;
+  }
+  
+  // Remove default button appearance
+  &:not(:disabled):not(.bs5-disabled) {
+    cursor: pointer;
+  }
+  
+  // Remove focus outline when not using keyboard
+  &:focus:not(:focus-visible) {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+// Button group context
+.bs5-btn-group,
+.bs5-btn-group-vertical {
+  > .bs5-btn:not(:first-child) {
+    margin-left: calc(var(--bs5-border-width) * -1);
+  }
+  
+  > .bs5-btn:not(:last-child):not(.bs5-dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  > .bs5-btn:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+// =============================================================================
+// BUTTON SIZE VARIANTS (NAMESPACED)
+// =============================================================================
+
+.bs5-btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: var(--bs5-font-size-sm);
+  border-radius: var(--bs5-border-radius-sm);
+}
+
+.bs5-btn-lg {
+  padding: 0.5rem 1rem;
+  font-size: var(--bs5-font-size-lg);
+  border-radius: var(--bs5-border-radius-lg);
+}
+
+// =============================================================================
+// BUTTON COLOR VARIANTS (THEME-INTEGRATED)
+// =============================================================================
+
+// Mixin for button variant generation
+@mixin bs5-button-variant($background, $border, $color: contrast-color($background)) {
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+  
+  &:hover {
+    color: $color;
+    background-color: shade-color($background, 15%);
+    border-color: shade-color($border, 20%);
+  }
+  
+  &:focus,
+  &.bs5-focus {
+    color: $color;
+    background-color: shade-color($background, 15%);
+    border-color: shade-color($border, 25%);
+    box-shadow: 0 0 0 0.25rem rgba($border, 0.5);
+  }
+  
+  &:active,
+  &.bs5-active {
+    color: $color;
+    background-color: shade-color($background, 20%);
+    border-color: shade-color($border, 25%);
+  }
+  
+  &:disabled,
+  &.bs5-disabled {
+    color: $color;
+    background-color: $background;
+    border-color: $border;
+  }
+}
+
+// Mixin for outline button variants
+@mixin bs5-button-outline-variant($color, $color-hover: $color) {
+  color: $color;
+  border-color: $color;
+  
+  &:hover {
+    color: contrast-color($color-hover);
+    background-color: $color-hover;
+    border-color: $color-hover;
+  }
+  
+  &:focus,
+  &.bs5-focus {
+    box-shadow: 0 0 0 0.25rem rgba($color, 0.5);
+  }
+  
+  &:active,
+  &.bs5-active {
+    color: contrast-color($color-hover);
+    background-color: $color-hover;
+    border-color: $color-hover;
+  }
+  
+  &:disabled,
+  &.bs5-disabled {
+    color: $color;
+    background-color: transparent;
+  }
+}
+
+// Primary button (integrated with SuiteCRM themes)
+.bs5-btn-primary {
+  @include bs5-button-variant(var(--bs5-primary), var(--bs5-primary));
+}
+
+.bs5-btn-outline-primary {
+  @include bs5-button-outline-variant(var(--bs5-primary));
+}
+
+// Secondary button
+.bs5-btn-secondary {
+  @include bs5-button-variant(var(--bs5-secondary), var(--bs5-secondary));
+}
+
+.bs5-btn-outline-secondary {
+  @include bs5-button-outline-variant(var(--bs5-secondary));
+}
+
+// Success button
+.bs5-btn-success {
+  @include bs5-button-variant(var(--bs5-success), var(--bs5-success));
+}
+
+.bs5-btn-outline-success {
+  @include bs5-button-outline-variant(var(--bs5-success));
+}
+
+// Info button
+.bs5-btn-info {
+  @include bs5-button-variant(var(--bs5-info), var(--bs5-info));
+}
+
+.bs5-btn-outline-info {
+  @include bs5-button-outline-variant(var(--bs5-info));
+}
+
+// Warning button
+.bs5-btn-warning {
+  @include bs5-button-variant(var(--bs5-warning), var(--bs5-warning));
+}
+
+.bs5-btn-outline-warning {
+  @include bs5-button-outline-variant(var(--bs5-warning));
+}
+
+// Danger button
+.bs5-btn-danger {
+  @include bs5-button-variant(var(--bs5-danger), var(--bs5-danger));
+}
+
+.bs5-btn-outline-danger {
+  @include bs5-button-outline-variant(var(--bs5-danger));
+}
+
+// Light button
+.bs5-btn-light {
+  @include bs5-button-variant(var(--bs5-light), var(--bs5-light));
+}
+
+.bs5-btn-outline-light {
+  @include bs5-button-outline-variant(var(--bs5-light));
+}
+
+// Dark button
+.bs5-btn-dark {
+  @include bs5-button-variant(var(--bs5-dark), var(--bs5-dark));
+}
+
+.bs5-btn-outline-dark {
+  @include bs5-button-outline-variant(var(--bs5-dark));
+}
+
+// =============================================================================
+// SPECIAL BUTTON VARIANTS
+// =============================================================================
+
+// Link button
+.bs5-btn-link {
+  font-weight: var(--bs5-font-weight-normal);
+  color: var(--bs5-link-color);
+  text-decoration: var(--bs5-link-decoration, none);
+  
+  &:hover {
+    color: var(--bs5-link-hover-color);
+    text-decoration: var(--bs5-link-hover-decoration, underline);
+  }
+  
+  &:focus {
+    text-decoration: var(--bs5-link-hover-decoration, underline);
+  }
+  
+  &:disabled,
+  &.bs5-disabled {
+    color: var(--bs5-gray);
+  }
+  
+  // No need for an active state here
+}
+
+// Close button
+.bs5-btn-close {
+  box-sizing: content-box;
+  width: 1em;
+  height: 1em;
+  padding: 0.25em 0.25em;
+  color: var(--bs5-black);
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='m.235 1.027 4.762 4.762 4.762-4.762a.707.707 0 1 1 1 1L6.018 6.79l4.741 4.742a.707.707 0 0 1-1 1L5.018 7.792l-4.762 4.76a.707.707 0 0 1-1-1L4.016 6.79.235 2.027a.707.707 0 1 1 1-1z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  border-radius: var(--bs5-border-radius);
+  opacity: 0.5;
+  
+  &:hover {
+    color: var(--bs5-black);
+    text-decoration: none;
+    opacity: 0.75;
+  }
+  
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs5-primary), 0.25);
+    opacity: 1;
+  }
+  
+  &:disabled,
+  &.bs5-disabled {
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.25;
+  }
+}
+
+.bs5-btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+// =============================================================================
+// BUTTON BLOCK UTILITIES
+// =============================================================================
+
+.bs5-d-grid .bs5-btn {
+  width: 100%;
+}
+
+// Legacy block button support (Bootstrap 5 approach)
+.bs5-btn-block {
+  display: block;
+  width: 100%;
+  
+  // Spacing for stacked buttons
+  + .bs5-btn-block {
+    margin-top: 0.5rem;
+  }
+}
+
+// =============================================================================
+// BUTTON GROUP COMPONENT (NAMESPACED)
+// =============================================================================
+
+.bs5-btn-group,
+.bs5-btn-group-vertical {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  
+  > .bs5-btn {
+    position: relative;
+    flex: 1 1 auto;
+    
+    &:hover,
+    &:focus,
+    &:active,
+    &.bs5-active {
+      z-index: 1;
+    }
+  }
+}
+
+.bs5-btn-group {
+  > .bs5-btn:not(:first-child),
+  > .bs5-btn-group:not(:first-child) {
+    margin-left: calc(var(--bs5-border-width) * -1);
+  }
+  
+  > .bs5-btn:not(:last-child):not(.bs5-dropdown-toggle),
+  > .bs5-btn-group:not(:last-child) > .bs5-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  > .bs5-btn:nth-child(n + 3),
+  > :not(.bs5-btn-check) + .bs5-btn,
+  > .bs5-btn-group:not(:first-child) > .bs5-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.bs5-btn-group-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  
+  > .bs5-btn,
+  > .bs5-btn-group {
+    width: 100%;
+  }
+  
+  > .bs5-btn:not(:first-child),
+  > .bs5-btn-group:not(:first-child) {
+    margin-top: calc(var(--bs5-border-width) * -1);
+    margin-left: 0;
+  }
+  
+  > .bs5-btn:not(:last-child):not(.bs5-dropdown-toggle),
+  > .bs5-btn-group:not(:last-child) > .bs5-btn {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  > .bs5-btn ~ .bs5-btn,
+  > .bs5-btn-group:not(:first-child) > .bs5-btn {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+
+// =============================================================================
+// BUTTON TOOLBAR (NAMESPACED)
+// =============================================================================
+
+.bs5-btn-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  
+  .bs5-input-group {
+    width: auto;
+  }
+}
+
+// =============================================================================
+// HELPER FUNCTIONS FOR THEME INTEGRATION
+// =============================================================================
+
+// Color contrast function (simplified for CSS custom properties)
+@function contrast-color($background) {
+  // Simplified contrast logic - could be enhanced
+  @return #fff;
+}
+
+// Shade color function (simplified for CSS custom properties)
+@function shade-color($color, $percentage) {
+  // Simplified shading - in real implementation would use color functions
+  @return $color;
+} 

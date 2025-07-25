@@ -49,7 +49,6 @@ use Monolog\Logger;
 /**
  * CliLoggerFormatter for CliLoggerHandler.
  */
-#[\AllowDynamicProperties]
 class CliLoggerFormatter implements FormatterInterface
 {
     /**  @var array a list of the available colours for quicker usage */

@@ -727,6 +727,11 @@
                     </button>
                     <div id="alerts" class="dropdown-menu" role="menu">{$APP.LBL_EMAIL_ERROR_VIEW_RAW_SOURCE}</div>
                 </li>
+                {* Theme Switcher Integration - Phase 1 Feature 2 Step 3 *}
+                {* Fixed Smarty syntax error - CSS now wrapped in literal tags *}
+                <li id="theme_switcher" class="dropdown nav navbar-nav theme-switcher-nav">
+                    {include file="themes/SuiteP/tpls/components/theme-switcher-safe.tpl"}
+                </li>
                 <li id="globalLinks" class="dropdown nav navbar-nav globalLinks-desktop">
                     <button id="with-label" class="dropdown-toggle user-menu-button" title="{$CURRENT_USER}"data-toggle="dropdown" aria-expanded="true">
                         <span class="suitepicon suitepicon-action-current-user"></span>

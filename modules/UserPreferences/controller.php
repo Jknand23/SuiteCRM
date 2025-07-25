@@ -59,4 +59,123 @@ class UserPreferencesController extends SugarController
             echo 'result = ' . $json->encode($retArray);
         }
     }
+
+    /**
+     * Save theme preference action for Alpine.js theme switcher
+     *
+     * Handles AJAX requests to save user theme preferences from the theme switcher component.
+     * Integrates with existing UserPreference system for compatibility and persistence.
+     *
+     * @since 1.0.0 - Feature 2 Step 3 Alpine.js Theme Switching
+     */
+    public function action_SaveThemePreference()
+    {
+        $this->view = 'ajax';
+        header('Content-Type: application/json');
+        
+        try {
+            // Validate request method
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->sendErrorResponse('Only POST method allowed', 405);
+                return;
+            }
+            
+            // Validate user authentication
+            global $current_user;
+            if (empty($current_user) || empty($current_user->id)) {
+                $this->sendErrorResponse('User not authenticated', 401);
+                return;
+            }
+            
+            // Validate AJAX request
+            if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
+                $this->sendErrorResponse('Invalid request type', 400);
+                return;
+            }
+            
+            // Get and validate input parameters
+            $preferenceName = $this->getInputParameter('preference_name');
+            $preferenceValue = $this->getInputParameter('preference_value');
+            $category = $this->getInputParameter('category', 'global');
+            
+            // Validate theme preference specifically
+            $validThemes = ['Dawn', 'Day', 'Dusk', 'Night', 'Noon'];
+            if ($preferenceName === 'subtheme' && !in_array($preferenceValue, $validThemes, true)) {
+                $this->sendErrorResponse('Invalid theme name provided', 400);
+                return;
+            }
+            
+            // Save preference using existing UserPreference system
+            $current_user->setPreference($preferenceName, $preferenceValue, $category);
+            $current_user->savePreferencesToDB();
+            
+            // Log successful save
+            $GLOBALS['log']->info("Theme preference saved: {$preferenceName} = {$preferenceValue} for user {$current_user->id}");
+            
+            // Send success response
+            $this->sendSuccessResponse([
+                'preference_name' => $preferenceName,
+                'preference_value' => $preferenceValue,
+                'category' => $category,
+                'timestamp' => time()
+            ]);
+        } catch (Exception $e) {
+            $GLOBALS['log']->error('Theme preference save failed: ' . $e->getMessage());
+            $this->sendErrorResponse('Failed to save preference: ' . $e->getMessage(), 500);
+        }
+    }
+    
+    /**
+     * Get input parameter with validation
+     *
+     * @param string $name Parameter name
+     * @param string $default Default value
+     * @return string Parameter value
+     */
+    private function getInputParameter($name, $default = '')
+    {
+        $value = $_POST[$name] ?? $default;
+        
+        // Basic sanitization
+        $value = trim($value);
+        $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        
+        return $value;
+    }
+    
+    /**
+     * Send JSON success response
+     *
+     * @param array $data Response data
+     */
+    private function sendSuccessResponse($data = [])
+    {
+        $response = [
+            'success' => true,
+            'message' => 'Preference saved successfully',
+            'data' => $data
+        ];
+        
+        echo json_encode($response);
+    }
+    
+    /**
+     * Send JSON error response
+     *
+     * @param string $message Error message
+     * @param int $statusCode HTTP status code
+     */
+    private function sendErrorResponse($message, $statusCode = 400)
+    {
+        http_response_code($statusCode);
+        
+        $response = [
+            'success' => false,
+            'error' => $message,
+            'timestamp' => time()
+        ];
+        
+        echo json_encode($response);
+    }
 }

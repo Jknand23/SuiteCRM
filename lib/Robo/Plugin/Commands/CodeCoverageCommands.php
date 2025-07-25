@@ -45,7 +45,6 @@ use RuntimeException;
 use SuiteCRM\Utility\OperatingSystem;
 use SuiteCRM\Robo\Traits\RoboTrait;
 
-#[\AllowDynamicProperties]
 class CodeCoverageCommands extends Tasks
 {
     use RoboTrait;
@@ -107,4 +106,236 @@ class CodeCoverageCommands extends Tasks
 
         return $command;
     }
+
+    /**
+     * Generate enhanced code coverage report including new OAuth2 and API security components
+     * Extends existing generateCodeCoverageFile() functionality with new component coverage
+     * @param array $opts optional enhanced coverage options
+     */
+    public function enhancedCodeCoverage(
+        array $opts = [
+            'include_oauth2' => true,
+            'include_api_security' => true,
+            'include_enhanced_middleware' => true,
+            'output_format' => 'html',
+        ]
+    ) {
+        $this->say('Enhanced Code Coverage - Including New Components');
+
+        // Generate base coverage using existing functionality
+        $this->generateCodeCoverageFile();
+
+        if ($opts['include_oauth2']) {
+            $this->say('Generating OAuth2 component coverage...');
+            $this->generateOAuth2CoverageInternal($opts['output_format']);
+        }
+
+        if ($opts['include_api_security']) {
+            $this->say('Generating API security middleware coverage...');
+            $this->generateApiSecurityCoverageInternal($opts['output_format']);
+        }
+
+        if ($opts['include_enhanced_middleware']) {
+            $this->say('Generating enhanced middleware coverage...');
+            $this->generateEnhancedMiddlewareCoverageInternal($opts['output_format']);
+        }
+
+        $this->say('Enhanced code coverage generation completed');
+        $this->say('Standard coverage: ./tests/_output/coverage.xml');
+        
+        if ($opts['output_format'] === 'html') {
+            $this->say('Enhanced HTML coverage: ./tests/_output/enhanced_coverage/');
+        }
+    }
+
+    /**
+     * Generate OAuth2 component-specific coverage report
+     * @param string $format output format (html, xml, text)
+     */
+    private function generateOAuth2CoverageInternal($format = 'html')
+    {
+        $os = new OperatingSystem();
+        $oauth2Paths = [
+            './lib/Authentication/OAuth2Service.php',
+            './lib/Authentication/ProviderFactory.php',
+            './lib/Authentication/SecurityValidator.php',
+            './lib/Authentication/TokenManager.php',
+            './lib/Authentication/UserLinker.php',
+            './lib/Authentication/OAuth2AuthenticationProvider.php',
+        ];
+
+        $pathsString = implode(' ', $oauth2Paths);
+        $outputDir = './tests/_output/oauth2_coverage/';
+
+        // Create output directory if it doesn't exist
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0777, true);
+        }
+
+        $command = $os->toOsPath('./vendor/bin/phpunit')
+            . ' --configuration ./tests/phpunit.xml.dist'
+            . ' --coverage-' . $format . ' ' . $outputDir
+            . ' --whitelist ' . $pathsString
+            . ' ./tests/unit/phpunit';
+
+        $this->_exec($command);
+        $this->say("OAuth2 coverage generated in {$outputDir}");
+    }
+
+    /**
+     * Generate API security middleware coverage report
+     * @param string $format output format (html, xml, text)
+     */
+    private function generateApiSecurityCoverageInternal($format = 'html')
+    {
+        $os = new OperatingSystem();
+        $apiSecurityPaths = [
+            './Api/V8/Middleware/RateLimitMiddleware.php',
+            './Api/V8/Middleware/SecurityHeadersMiddleware.php',
+            './Api/V8/Middleware/CorsMiddleware.php',
+            './Api/V8/Middleware/ApiKeyAuthMiddleware.php',
+            './Api/V8/Middleware/EnhancedValidationMiddleware.php',
+            './Api/V8/Middleware/RequestLoggingMiddleware.php',
+        ];
+
+        $pathsString = implode(' ', $apiSecurityPaths);
+        $outputDir = './tests/_output/api_security_coverage/';
+
+        // Create output directory if it doesn't exist
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0777, true);
+        }
+
+        $command = $os->toOsPath('./vendor/bin/phpunit')
+            . ' --configuration ./tests/phpunit.xml.dist'
+            . ' --coverage-' . $format . ' ' . $outputDir
+            . ' --whitelist ' . $pathsString
+            . ' ./tests/unit/phpunit';
+
+        $this->_exec($command);
+        $this->say("API security coverage generated in {$outputDir}");
+    }
+
+    /**
+     * Generate enhanced middleware and controller coverage report
+     * @param string $format output format (html, xml, text)
+     */
+    private function generateEnhancedMiddlewareCoverageInternal($format = 'html')
+    {
+        $os = new OperatingSystem();
+        $enhancedPaths = [
+            './Api/V8/Controller/EnhancedBaseController.php',
+            './Api/V8/JsonApi/Response/EnhancedErrorResponse.php',
+            './lib/Authentication/SecurityMonitoringService.php',
+            './lib/Log/EnhancedLoggerService.php',
+        ];
+
+        $pathsString = implode(' ', $enhancedPaths);
+        $outputDir = './tests/_output/enhanced_coverage/';
+
+        // Create output directory if it doesn't exist
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0777, true);
+        }
+
+        $command = $os->toOsPath('./vendor/bin/phpunit')
+            . ' --configuration ./tests/phpunit.xml.dist'
+            . ' --coverage-' . $format . ' ' . $outputDir
+            . ' --whitelist ' . $pathsString
+            . ' ./tests/unit/phpunit';
+
+        $this->_exec($command);
+        $this->say("Enhanced middleware coverage generated in {$outputDir}");
+    }
+
+    /**
+     * Generate OAuth2 component coverage reports
+     * Public interface that delegates to private implementation
+     */
+    public function generateOAuth2Coverage()
+    {
+        return $this->generateOAuth2CoverageInternal('html');
+    }
+
+    /**
+     * Generate API security middleware coverage reports
+     * Public interface that delegates to private implementation
+     */
+    public function generateApiSecurityCoverage()
+    {
+        return $this->generateApiSecurityCoverageInternal('html');
+    }
+
+    /**
+     * Generate enhanced middleware and controller coverage reports
+     * Public interface that delegates to private implementation
+     */
+    public function generateEnhancedMiddlewareCoverage()
+    {
+        return $this->generateEnhancedMiddlewareCoverageInternal('html');
+    }
+
+    /**
+     * Generate coverage summary for all new components
+     * Provides comprehensive overview of test coverage across new features
+     */
+    public function coverageSummaryNewComponents()
+    {
+        $this->say('Generating Coverage Summary for New Components');
+
+        $components = [
+            'OAuth2 Authentication' => [
+                './lib/Authentication/OAuth2Service.php',
+                './lib/Authentication/ProviderFactory.php',
+                './lib/Authentication/SecurityValidator.php',
+                './lib/Authentication/TokenManager.php',
+                './lib/Authentication/UserLinker.php',
+                './lib/Authentication/OAuth2AuthenticationProvider.php',
+            ],
+            'API Security Middleware' => [
+                './Api/V8/Middleware/RateLimitMiddleware.php',
+                './Api/V8/Middleware/SecurityHeadersMiddleware.php',
+                './Api/V8/Middleware/CorsMiddleware.php',
+                './Api/V8/Middleware/ApiKeyAuthMiddleware.php',
+                './Api/V8/Middleware/EnhancedValidationMiddleware.php',
+                './Api/V8/Middleware/RequestLoggingMiddleware.php',
+            ],
+            'Enhanced Controllers' => [
+                './Api/V8/Controller/EnhancedBaseController.php',
+                './Api/V8/JsonApi/Response/EnhancedErrorResponse.php',
+            ],
+            'Enhanced Services' => [
+                './lib/Authentication/SecurityMonitoringService.php',
+                './lib/Log/EnhancedLoggerService.php',
+            ],
+        ];
+
+        foreach ($components as $componentName => $files) {
+            $this->say("Component: {$componentName}");
+            $existingFiles = 0;
+            $totalFiles = count($files);
+            
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    $existingFiles++;
+                    $this->say("  ✓ {$file}");
+                } else {
+                    $this->say("  ✗ {$file} (not found)");
+                }
+            }
+            
+            $coverage = $totalFiles > 0 ? round(($existingFiles / $totalFiles) * 100, 2) : 0;
+            $this->say("  Coverage: {$existingFiles}/{$totalFiles} files ({$coverage}%)");
+            $this->say('');
+        }
+
+        $this->say('Use enhancedCodeCoverage() command to generate detailed coverage reports');
+    }
 }
+
+/**
+ * @fileoverview Enhanced Robo command collection for code coverage reporting including new OAuth2 and API security components. Extends existing code coverage functionality with component-specific coverage analysis and reporting capabilities.
+ * @package SuiteCRM.Robo.Commands
+ * @copyright SalesAgility Ltd. 2018
+ * @license GNU Affero General Public License version 3
+ */

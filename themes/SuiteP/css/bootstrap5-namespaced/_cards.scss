@@ -1,0 +1,390 @@
+/**
+ * @fileoverview Bootstrap 5 Namespaced Card System
+ * 
+ * Modern Bootstrap 5 card components with .bs5-card prefix to prevent conflicts
+ * with existing Bootstrap 3.3.7 panel classes. Features modern card layouts,
+ * enhanced styling options, and integration with SuiteCRM's theme system.
+ * 
+ * Key Features:
+ * - .bs5-card, .bs5-card-header, .bs5-card-body, .bs5-card-footer classes
+ * - Modern card styling and spacing
+ * - Card image and media object support
+ * - Zero conflicts with existing .panel classes
+ * - Theme-aware color integration
+ * 
+ * Dependencies:
+ * - Bootstrap 5 namespaced variables
+ * - SuiteCRM CSS custom properties theme system
+ * 
+ * @author SuiteCRM Modernization Team
+ * @version 1.0.0
+ * @since 2024-01-16
+ */
+
+// =============================================================================
+// BASE CARD COMPONENT (NAMESPACED)
+// =============================================================================
+
+.bs5-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+  height: var(--bs5-card-height);
+  word-wrap: break-word;
+  background-color: var(--bs5-card-bg);
+  background-clip: border-box;
+  border: var(--bs5-card-border-width) solid var(--bs5-card-border-color);
+  border-radius: var(--bs5-card-border-radius);
+  
+  > hr {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  
+  > .bs5-list-group {
+    border-top: inherit;
+    border-bottom: inherit;
+    
+    &:first-child {
+      border-top-width: 0;
+      border-top-left-radius: var(--bs5-card-inner-border-radius);
+      border-top-right-radius: var(--bs5-card-inner-border-radius);
+    }
+    
+    &:last-child {
+      border-bottom-width: 0;
+      border-bottom-right-radius: var(--bs5-card-inner-border-radius);
+      border-bottom-left-radius: var(--bs5-card-inner-border-radius);
+    }
+  }
+  
+  // Card image variants
+  > .bs5-card-img,
+  > .bs5-card-img-top,
+  > .bs5-card-img-bottom {
+    width: 100%; // Required because we use flexbox and this inherently applies align-self: stretch
+  }
+  
+  > .bs5-card-img,
+  > .bs5-card-img-top {
+    border-top-left-radius: var(--bs5-card-inner-border-radius);
+    border-top-right-radius: var(--bs5-card-inner-border-radius);
+  }
+  
+  > .bs5-card-img,
+  > .bs5-card-img-bottom {
+    border-bottom-right-radius: var(--bs5-card-inner-border-radius);
+    border-bottom-left-radius: var(--bs5-card-inner-border-radius);
+  }
+}
+
+// =============================================================================
+// CARD BODY AND CONTENT AREAS
+// =============================================================================
+
+.bs5-card-body {
+  // Enable `flex-grow: 1` for decks and groups so that card blocks take up
+  // as much space as possible, ensuring footers are aligned to the bottom.
+  flex: 1 1 auto;
+  padding: var(--bs5-card-spacer-y) var(--bs5-card-spacer-x);
+  color: var(--bs5-card-color);
+}
+
+.bs5-card-title {
+  margin-bottom: var(--bs5-card-title-spacer-y);
+  color: var(--bs5-card-title-color);
+}
+
+.bs5-card-subtitle {
+  margin-top: calc(-.5 * var(--bs5-card-title-spacer-y));
+  margin-bottom: 0;
+  color: var(--bs5-card-subtitle-color);
+}
+
+.bs5-card-text:last-child {
+  margin-bottom: 0;
+}
+
+.bs5-card-link {
+  color: var(--bs5-card-link-color);
+  
+  &:hover {
+    color: var(--bs5-card-link-hover-color);
+    text-decoration: var(--bs5-link-hover-decoration, underline);
+  }
+  
+  + .bs5-card-link {
+    margin-left: var(--bs5-card-spacer-x);
+  }
+}
+
+// =============================================================================
+// CARD HEADER AND FOOTER
+// =============================================================================
+
+.bs5-card-header {
+  padding: var(--bs5-card-cap-padding-y) var(--bs5-card-cap-padding-x);
+  margin-bottom: 0; // Removes the default margin-bottom of <hN>
+  color: var(--bs5-card-cap-color);
+  background-color: var(--bs5-card-cap-bg);
+  border-bottom: var(--bs5-card-border-width) solid var(--bs5-card-border-color);
+  
+  &:first-child {
+    border-radius: var(--bs5-card-inner-border-radius) var(--bs5-card-inner-border-radius) 0 0;
+  }
+}
+
+.bs5-card-footer {
+  padding: var(--bs5-card-cap-padding-y) var(--bs5-card-cap-padding-x);
+  color: var(--bs5-card-cap-color);
+  background-color: var(--bs5-card-cap-bg);
+  border-top: var(--bs5-card-border-width) solid var(--bs5-card-border-color);
+  
+  &:last-child {
+    border-radius: 0 0 var(--bs5-card-inner-border-radius) var(--bs5-card-inner-border-radius);
+  }
+}
+
+// =============================================================================
+// CARD IMAGES
+// =============================================================================
+
+.bs5-card-img-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--bs5-card-img-overlay-padding);
+  border-radius: var(--bs5-card-inner-border-radius);
+}
+
+.bs5-card-img,
+.bs5-card-img-top,
+.bs5-card-img-bottom {
+  width: 100%;
+}
+
+.bs5-card-img,
+.bs5-card-img-top {
+  border-top-left-radius: var(--bs5-card-inner-border-radius);
+  border-top-right-radius: var(--bs5-card-inner-border-radius);
+}
+
+.bs5-card-img,
+.bs5-card-img-bottom {
+  border-bottom-right-radius: var(--bs5-card-inner-border-radius);
+  border-bottom-left-radius: var(--bs5-card-inner-border-radius);
+}
+
+// =============================================================================
+// CARD GROUPS
+// =============================================================================
+
+.bs5-card-group {
+  // The child selector allows nested `.card` within `.card-group`
+  // to display properly.
+  > .bs5-card {
+    margin-bottom: var(--bs5-card-group-margin);
+  }
+  
+  @include bs5-media-breakpoint-up(sm) {
+    display: flex;
+    flex-flow: row wrap;
+    // The child selector allows nested `.card` within `.card-group`
+    // to display properly.
+    > .bs5-card {
+      // Flexbugs #4: https://github.com/philipwalton/flexbugs#flexbug-4
+      flex: 1 0 0%;
+      margin-bottom: 0;
+      
+      + .bs5-card {
+        margin-left: 0;
+        border-left: 0;
+      }
+      
+      // Handle rounded corners
+      &:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      
+      &:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ACCORDION CARDS (MODERN REPLACEMENT FOR COLLAPSE PANELS)
+// =============================================================================
+
+.bs5-accordion {
+  // Sass map from `$accordion-button-icon` is compiled to a data URI that's used for the default button icons
+  --bs5-accordion-color: #{var(--bs5-body-color)};
+  --bs5-accordion-bg: #{var(--bs5-body-bg)};
+  --bs5-accordion-transition: #{color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, border-radius .15s ease};
+  --bs5-accordion-border-color: #{var(--bs5-border-color)};
+  --bs5-accordion-border-width: #{var(--bs5-border-width)};
+  --bs5-accordion-border-radius: #{var(--bs5-border-radius)};
+  --bs5-accordion-inner-border-radius: #{calc(#{var(--bs5-border-radius)} - #{var(--bs5-border-width)})};
+  --bs5-accordion-btn-padding-x: 1.25rem;
+  --bs5-accordion-btn-padding-y: 1rem;
+  --bs5-accordion-btn-color: #{var(--bs5-body-color)};
+  --bs5-accordion-btn-bg: var(--bs5-accordion-bg);
+  --bs5-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  --bs5-accordion-btn-icon-width: 1.25rem;
+  --bs5-accordion-btn-icon-transform: rotate(-180deg);
+  --bs5-accordion-btn-icon-transition: transform .2s ease-in-out;
+  --bs5-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23052c65'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  --bs5-accordion-btn-focus-border-color: #{var(--bs5-primary)};
+  --bs5-accordion-btn-focus-box-shadow: #{0 0 0 0.25rem rgba(var(--bs5-primary), .25)};
+  --bs5-accordion-body-padding-x: 1.25rem;
+  --bs5-accordion-body-padding-y: 1rem;
+  --bs5-accordion-active-color: #{shade-color(var(--bs5-primary), 10%)};
+  --bs5-accordion-active-bg: #{tint-color(var(--bs5-primary), 90%)};
+}
+
+.bs5-accordion-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--bs5-accordion-btn-padding-y) var(--bs5-accordion-btn-padding-x);
+  font-size: var(--bs5-font-size-base);
+  color: var(--bs5-accordion-btn-color);
+  text-align: left; // Reset button style
+  background-color: var(--bs5-accordion-btn-bg);
+  border: 0;
+  border-radius: 0;
+  overflow-anchor: none;
+  transition: var(--bs5-accordion-transition);
+  
+  &:not(.bs5-collapsed) {
+    color: var(--bs5-accordion-active-color);
+    background-color: var(--bs5-accordion-active-bg);
+    box-shadow: inset 0 calc(-1 * var(--bs5-accordion-border-width)) 0 var(--bs5-accordion-border-color);
+    
+    &::after {
+      background-image: var(--bs5-accordion-btn-active-icon);
+      transform: var(--bs5-accordion-btn-icon-transform);
+    }
+  }
+  
+  // Accordion icon
+  &::after {
+    flex-shrink: 0;
+    width: var(--bs5-accordion-btn-icon-width);
+    height: var(--bs5-accordion-btn-icon-width);
+    margin-left: auto;
+    content: "";
+    background-image: var(--bs5-accordion-btn-icon);
+    background-repeat: no-repeat;
+    background-size: var(--bs5-accordion-btn-icon-width);
+    transition: var(--bs5-accordion-btn-icon-transition);
+  }
+  
+  &:hover {
+    z-index: 2;
+  }
+  
+  &:focus {
+    z-index: 3;
+    border-color: var(--bs5-accordion-btn-focus-border-color);
+    outline: 0;
+    box-shadow: var(--bs5-accordion-btn-focus-box-shadow);
+  }
+}
+
+.bs5-accordion-header {
+  margin-bottom: 0;
+}
+
+.bs5-accordion-item {
+  color: var(--bs5-accordion-color);
+  background-color: var(--bs5-accordion-bg);
+  border: var(--bs5-accordion-border-width) solid var(--bs5-accordion-border-color);
+  
+  &:first-of-type {
+    border-top-left-radius: var(--bs5-accordion-border-radius);
+    border-top-right-radius: var(--bs5-accordion-border-radius);
+    
+    .bs5-accordion-button {
+      border-top-left-radius: var(--bs5-accordion-inner-border-radius);
+      border-top-right-radius: var(--bs5-accordion-inner-border-radius);
+    }
+  }
+  
+  &:not(:first-of-type) {
+    border-top: 0;
+  }
+  
+  &:last-of-type {
+    border-bottom-right-radius: var(--bs5-accordion-border-radius);
+    border-bottom-left-radius: var(--bs5-accordion-border-radius);
+    
+    .bs5-accordion-button {
+      &.bs5-collapsed {
+        border-bottom-right-radius: var(--bs5-accordion-inner-border-radius);
+        border-bottom-left-radius: var(--bs5-accordion-inner-border-radius);
+      }
+    }
+    
+    .bs5-accordion-collapse {
+      border-bottom-right-radius: var(--bs5-accordion-border-radius);
+      border-bottom-left-radius: var(--bs5-accordion-border-radius);
+    }
+  }
+}
+
+.bs5-accordion-body {
+  padding: var(--bs5-accordion-body-padding-y) var(--bs5-accordion-body-padding-x);
+}
+
+// =============================================================================
+// CARD CSS CUSTOM PROPERTIES (THEME INTEGRATION)
+// =============================================================================
+
+:root {
+  // Card variables
+  --bs5-card-spacer-y: 1rem;
+  --bs5-card-spacer-x: 1rem;
+  --bs5-card-title-spacer-y: 0.5rem;
+  --bs5-card-title-color: var(--theme-text-color, inherit);
+  --bs5-card-subtitle-color: var(--theme-text-muted, #6c757d);
+  --bs5-card-border-width: var(--bs5-border-width);
+  --bs5-card-border-color: var(--theme-border, var(--bs5-border-color-translucent));
+  --bs5-card-border-radius: var(--bs5-border-radius);
+  --bs5-card-box-shadow: ;
+  --bs5-card-inner-border-radius: calc(var(--bs5-border-radius) - var(--bs5-border-width));
+  --bs5-card-cap-padding-y: 0.5rem;
+  --bs5-card-cap-padding-x: 1rem;
+  --bs5-card-cap-bg: var(--theme-surface-light, rgba(var(--bs5-body-color), 0.03));
+  --bs5-card-cap-color: var(--theme-text-color, inherit);
+  --bs5-card-height: ;
+  --bs5-card-color: var(--theme-text-color, inherit);
+  --bs5-card-bg: var(--theme-surface, var(--bs5-body-bg));
+  --bs5-card-img-overlay-padding: 1rem;
+  --bs5-card-group-margin: 0.75rem;
+  --bs5-card-link-color: var(--theme-link-color, var(--bs5-link-color));
+  --bs5-card-link-hover-color: var(--theme-link-hover-color, var(--bs5-link-hover-color));
+}
+
+// =============================================================================
+// HELPER FUNCTIONS FOR THEME INTEGRATION
+// =============================================================================
+
+// Tint color function (simplified for CSS custom properties)
+@function tint-color($color, $percentage) {
+  // Simplified tinting - in real implementation would use color functions
+  @return $color;
+}
+
+// Shade color function (simplified for CSS custom properties)
+@function shade-color($color, $percentage) {
+  // Simplified shading - in real implementation would use color functions
+  @return $color;
+} 

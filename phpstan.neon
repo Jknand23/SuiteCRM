@@ -1,0 +1,171 @@
+# PHPStan Configuration for SuiteCRM Modernization Project
+# Focuses on analyzing new modernized components while preserving legacy compatibility
+# Compatible with PHP 7.4 and Docker environment
+
+parameters:
+    # Analysis level for new modernized components (6+ as recommended)
+    level: 6
+    
+    # PHP version compatibility
+    phpVersion: 70400  # PHP 7.4.0
+    
+    # Paths to analyze - focusing on NEW modernized components only
+    paths:
+        # OAuth2 Authentication Infrastructure (lib/Authentication/)
+        - lib/Authentication/OAuth2Service.php
+        - lib/Authentication/ProviderFactory.php
+        - lib/Authentication/SecurityValidator.php
+        - lib/Authentication/TokenManager.php
+        - lib/Authentication/UserLinker.php
+        - lib/Authentication/OAuth2AuthenticationProvider.php
+        - lib/Authentication/SecurityMonitoringService.php
+        - lib/Authentication/entrypoints/
+        
+        # Enhanced API Middleware (Api/V8/Middleware/)
+        - Api/V8/Middleware/EnhancedValidationMiddleware.php
+        - Api/V8/Middleware/RequestLoggingMiddleware.php
+        - Api/V8/Middleware/RateLimitMiddleware.php
+        - Api/V8/Middleware/SecurityHeadersMiddleware.php
+        - Api/V8/Middleware/CorsMiddleware.php
+        - Api/V8/Middleware/ApiKeyAuthMiddleware.php
+        
+        # Enhanced API Controllers (Api/V8/Controller/)
+        - Api/V8/Controller/EnhancedBaseController.php
+        - Api/V8/Controller/DocumentationController.php
+        
+        # Enhanced API Services (Api/V8/Service/)
+        - Api/V8/Service/OpenApiDocumentationService.php
+        - Api/V8/Service/MetaService.php
+        
+        # Enhanced API Responses (Api/V8/JsonApi/Response/)
+        - Api/V8/JsonApi/Response/EnhancedErrorResponse.php
+        
+        # Enhanced Robo Commands (lib/Robo/Plugin/Commands/)
+        - lib/Robo/Plugin/Commands/ApiCommands.php
+        - lib/Robo/Plugin/Commands/BuildCommands.php
+
+    # Exclude legacy SuiteCRM code that may have issues
+    excludes_analyse:
+        # Legacy modules that may not meet modern PHP standards
+        - modules/*/metadata/
+        - modules/*/vardefs.php
+        - modules/*/language/
+        - modules/Delegates/
+        
+        # Legacy include files with potential issues
+        - include/SugarObjects/
+        - include/SubPanel/
+        - include/ListView/
+        - include/EditView/
+        - include/DetailView/
+        - include/Dashlets/
+        - include/database/
+        - include/utils/
+        - include/MVC/Controller/SugarController.php
+        - include/MVC/View/SugarView.php
+        
+        # Third-party libraries and legacy code
+        - vendor/
+        - XTemplate/
+        - Zend/
+        - include/nusoap/
+        - include/tcpdf/
+        - include/Smarty/
+        - include/Pear/
+        - include/ytree/
+        
+        # Legacy API components (focus only on enhanced components)
+        - Api/Core/
+        - Api/V8/Controller/BaseController.php
+        - Api/V8/Controller/UserController.php
+        - Api/V8/Controller/ModuleController.php
+        - Api/V8/Controller/RelationshipController.php
+        - Api/V8/Controller/ListViewController.php
+        - Api/V8/Controller/ListViewSearchController.php
+        - Api/V8/Controller/MetaController.php
+        - Api/V8/Controller/LogoutController.php
+        - Api/V8/Controller/UserPreferencesController.php
+        
+        # Legacy middleware
+        - Api/V8/Middleware/ParamsMiddleware.php
+        
+        # Cache and temporary files
+        - cache/
+        - upload/
+        - custom/
+        - install/
+        
+        # Test files (analyzed separately)
+        - tests/
+        
+        # Generated documentation files
+        - "**/*_docs.md"
+        - AI_Docs/
+        - plans/
+
+    # Bootstrap files for autoloading
+    bootstrapFiles:
+        - deprecated.php
+
+    # Scanner for dynamic analysis
+    scanDirectories:
+        - lib/
+        - Api/V8/
+
+    # Ignore specific error types that may occur with legacy SuiteCRM integration
+    ignoreErrors:
+        # Allow dynamic property access for SuiteCRM Bean compatibility
+        - '#Access to an undefined property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+#'
+        
+        # Allow undefined methods for SuiteCRM's magic method system
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\)#'
+        
+        # Allow undefined constants that may be defined in SuiteCRM's global scope
+        - '#Undefined constant [A-Z_]+#'
+        
+        # Allow array access on potentially non-array variables (SuiteCRM legacy patterns)
+        - '#Cannot access offset [a-zA-Z0-9_\'"]+ on [a-zA-Z0-9\\_\|]+#'
+        
+        # Specific to OAuth2 implementation - allow flexible return types for provider compatibility
+        - 
+            message: '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_|]+#'
+            path: lib/Authentication/ProviderFactory.php
+        
+        # Allow SuiteCRM's global variable access patterns in enhanced components
+        - 
+            message: '#Undefined variable: \$[a-zA-Z0-9_]+#'
+            paths:
+                - lib/Authentication/entrypoints/
+                - Api/V8/Controller/DocumentationController.php
+
+    # Memory limit for analysis
+    memoryLimitFile: 512M
+
+    # Enable parallel processing for faster analysis
+    parallel:
+        maximumNumberOfProcesses: 4
+
+    # Report unused public methods only in new components (not legacy)
+    reportUnmatchedIgnoredErrors: false
+    
+    # Check for missing return types in new code
+    checkMissingIterableValueType: true
+    
+    # Enable strict mode for new components
+    checkGenericClassInNonGenericObjectType: true
+    
+    # Enable additional checks for better code quality
+    checkAlwaysTrueCheckTypeFunctionCall: true
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    
+    # Enable union type checks (PHP 7.4 compatible)
+    checkUnionTypes: true
+
+# Include additional configuration for specific extensions if available
+includes:
+    # Uncomment if you want to include additional rules
+    # - phar://phpstan.phar/conf/bleedingEdge.neon 

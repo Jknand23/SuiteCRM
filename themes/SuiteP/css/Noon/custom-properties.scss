@@ -1,0 +1,247 @@
+/**
+ * @fileoverview Noon Theme CSS Custom Properties Layer
+ * 
+ * Converts existing SCSS variables to CSS custom properties for enhanced theme
+ * switching capabilities while preserving 100% backward compatibility.
+ * This file READS existing SCSS variables and creates CSS custom properties
+ * that can be used by modern Alpine.js components for instant theme switching.
+ * 
+ * Key Features:
+ * - Preserves all existing SCSS functionality
+ * - Creates CSS custom properties from established variables
+ * - Enables instant theme switching without page reload
+ * - Maintains compatibility with Bootstrap 3.3.7
+ * - Zero breaking changes to existing theme compilation
+ * - Optimized for bright, high-contrast design patterns
+ * 
+ * Dependencies:
+ * - Existing Noon theme variables.scss (preserved)
+ * - Existing Noon theme color-palette.scss (preserved)
+ * 
+ * @author SuiteCRM Modernization Team
+ * @version 1.0.0
+ * @since 2024-01-15
+ */
+
+// ADDITIVE ENHANCEMENT: Layer CSS custom properties on top of existing SCSS
+// This file READS existing variables, does NOT replace them
+:root {
+  // === BRAND COLORS ===
+  // Read from existing $brand-* variables
+  --theme-primary: #{$brand-primary};           // $color-81 (#001E40) - Dark navy blue
+  --theme-secondary: #{$brand-info};            // $color-89 (#5CA4BF) - Medium blue
+  --theme-success: #{$brand-success};           // $color-10 (#5CB85C) - Green
+  --theme-danger: #{$brand-danger};             // $color-86 (#7BDBFF) - Light blue
+  --theme-warning: #{$brand-warning};           // $color-47 (#E6D5A5) - Light yellow
+  --theme-info: #{$brand-info};                 // $color-89 (#5CA4BF) - Medium blue
+  
+  // === BACKGROUND COLORS ===
+  // Read from existing background variables
+  --theme-body-bg: #{$body-bg};                 // $color-80 (#FFFFFF) - White
+  --theme-main-bg: #{$main-bg};                 // $color-80 (#FFFFFF) - White
+  --theme-main-alternate-bg: #{$main-alternate-bg}; // $color-80 (#FFFFFF) - White
+  
+  // === PANEL COLORS ===
+  // Read from existing panel variables
+  --theme-panel-bg: #{$panel-bg};               // $main-alternate-bg
+  --theme-panel-border: #{$panel-default-border}; // Noon-specific border
+  --theme-panel-heading-bg: #{$panel-default-heading-bg}; // Noon-specific heading
+  --theme-panel-inner-border: #{$panel-inner-border}; // Noon-specific inner border
+  --theme-panel-footer-bg: #{$panel-footer-bg}; // Noon-specific footer
+  --theme-panel-border-bg: #{$panel-border-bg}; // Noon-specific border bg
+  
+  // === TEXT COLORS ===
+  // Read from existing text variables
+  --theme-text-color: #{$text-color};           // $gray-dark
+  --theme-link-color: #{$link-color};           // $brand-primary
+  --theme-link-hover-color: #{$link-hover-color}; // darken($link-color, 15%)
+  --theme-panel-text: #{$panel-default-text};   // $gray-dark
+  
+  // === BUTTON COLORS ===
+  // Read from existing button variables
+  --theme-btn-default-bg: #{$btn-default-bg};   // Noon default button
+  --theme-btn-default-color: #{$btn-default-color}; // Noon default text
+  --theme-btn-default-border: #{$btn-default-border}; // Noon default border
+  
+  --theme-btn-primary-bg: #{$btn-primary-bg};   // $brand-primary
+  --theme-btn-primary-color: #{$btn-primary-color}; // $color-80 (#FFFFFF)
+  --theme-btn-primary-border: #{$btn-primary-border}; // $brand-primary
+  
+  --theme-btn-success-bg: #{$btn-success-bg};   // $brand-success
+  --theme-btn-success-color: #{$btn-success-color}; // $color-80
+  --theme-btn-success-border: #{$btn-success-border}; // $brand-success
+  
+  --theme-btn-danger-bg: #{$btn-danger-bg};     // $brand-danger
+  --theme-btn-danger-color: #{$btn-danger-color}; // Noon-specific danger text
+  --theme-btn-danger-border: #{$btn-danger-border}; // $brand-danger
+  
+  --theme-btn-warning-bg: #{$btn-warning-bg};   // $brand-warning
+  --theme-btn-warning-color: #{$btn-warning-color}; // Noon-specific warning text
+  --theme-btn-warning-border: #{$btn-warning-border}; // $brand-warning
+  
+  --theme-btn-info-bg: #{$btn-info-bg};         // $brand-info
+  --theme-btn-info-color: #{$btn-info-color};   // $color-80
+  --theme-btn-info-border: #{$btn-info-border}; // $brand-info
+  
+  // === GRAY SCALE ===
+  // Read from existing gray variables
+  --theme-gray-base: #{$gray-base};             // $color-1 (#000000)
+  --theme-gray-darker: #{$gray-darker};         // lighten($gray-base, 13.5%)
+  --theme-gray-dark: #{$gray-dark};             // lighten($gray-base, 20%)
+  --theme-gray: #{$gray};                       // lighten($gray-base, 33.5%)
+  --theme-gray-light: #{$gray-light};           // lighten($gray-base, 46.7%)
+  --theme-gray-lighter: #{$gray-lighter};       // lighten($gray-base, 93.5%)
+  
+  // === NAVBAR COLORS ===
+  // Read from existing navbar variables
+  --theme-navbar-default-bg: #{$navbar-default-bg}; // Noon navbar background
+  --theme-navbar-default-color: #{$navbar-default-color}; // Noon navbar text
+  --theme-navbar-default-link-color: #{$navbar-default-link-color}; // Noon navbar links
+  --theme-navbar-default-link-hover-color: #{$navbar-default-link-hover-color}; // Noon navbar hover
+  
+  // === STATE COLORS ===
+  // Read from existing state variables
+  --theme-state-success-text: #{$state-success-text}; // Noon success text
+  --theme-state-success-bg: #{$state-success-bg}; // Noon success background
+  --theme-state-success-border: #{$state-success-border}; // Noon success border
+  
+  --theme-state-info-text: #{$state-info-text}; // Noon info text
+  --theme-state-info-bg: #{$state-info-bg};     // Noon info background
+  --theme-state-info-border: #{$state-info-border}; // Noon info border
+  
+  --theme-state-warning-text: #{$state-warning-text}; // Noon warning text
+  --theme-state-warning-bg: #{$state-warning-bg}; // Noon warning background
+  --theme-state-warning-border: #{$state-warning-border}; // Noon warning border
+  
+  --theme-state-danger-text: #{$state-danger-text}; // Noon danger text
+  --theme-state-danger-bg: #{$state-danger-bg}; // Noon danger background
+  --theme-state-danger-border: #{$state-danger-border}; // Noon danger border
+  
+  // === FORM COLORS ===
+  // Read from existing input variables
+  --theme-input-bg: #{$input-bg};               // $color-80 (#FFFFFF)
+  --theme-input-color: #{$input-color};         // $gray
+  --theme-input-border: #{$input-border};       // Noon input border
+  --theme-input-border-focus: #{$input-border-focus}; // Noon focus border
+  
+  // === BORDER COLORS ===
+  // Read from existing border variables  
+  --theme-border-radius-base: #{$border-radius-base}; // 4px
+  --theme-border-radius-large: #{$border-radius-large}; // 6px
+  --theme-border-radius-small: #{$border-radius-small}; // 3px
+  
+  // === SPACING ===
+  // Read from existing spacing variables
+  --theme-panel-body-padding: #{$panel-body-padding}; // 15px
+  --theme-panel-heading-padding: #{$panel-heading-padding}; // 10px 15px
+  --theme-page-content-spacing: #{$page-content-spacing}; // 20px
+  
+  // === CUSTOM THEME METADATA ===
+  // Theme identification for JavaScript consumption
+  --theme-name: 'noon';
+  --theme-variant: 'bright';
+  --theme-contrast: 'high';
+}
+
+// ENHANCED COMPATIBILITY: Additional utility custom properties for common patterns
+:root {
+  // === COMPUTED THEME UTILITIES ===
+  // These provide commonly needed color variations for bright theme
+  --theme-primary-hover: #{lighten($brand-primary, 10%)};    // Lighter for bright theme
+  --theme-primary-active: #{lighten($brand-primary, 15%)};   // Lighter for bright theme
+  --theme-primary-light: #{lighten($brand-primary, 30%)};
+  --theme-primary-dark: #{darken($brand-primary, 10%)};      // Subtle darkening for bright theme
+  
+  --theme-panel-shadow: rgba(0, 30, 64, 0.1);                // Brand-primary based shadow
+  --theme-panel-shadow-hover: rgba(0, 30, 64, 0.15);         // Enhanced brand-primary shadow
+  
+  // === FOCUS AND INTERACTION STATES ===
+  --theme-focus-color: #{$brand-primary};
+  --theme-focus-shadow: 0 0 0 0.2rem rgba(0, 30, 64, 0.25);  // Brand-primary focus
+  
+  // === SEMANTIC ALIASES ===
+  // Semantic naming for common UI patterns
+  --theme-surface: var(--theme-panel-bg);
+  --theme-surface-hover: #{darken($panel-bg, 2%)};            // Subtle darkening for bright theme
+  --theme-on-surface: var(--theme-text-color);
+  --theme-on-primary: var(--theme-btn-primary-color);
+  --theme-on-secondary: var(--theme-btn-info-color);
+  
+  // === LAYOUT UTILITIES ===
+  --theme-container-max-width: 1200px;
+  --theme-sidebar-width: 250px;
+  --theme-header-height: 60px;
+  --theme-footer-height: 40px;
+  
+  // === NOON THEME SPECIFIC UTILITIES ===
+  // High contrast enhancements for accessibility
+  --theme-bright-accent: #{$color-82};                       // #FFDE00 - Bright yellow accent
+  --theme-contrast-blue: #{$color-86};                       // #7BDBFF - High contrast blue
+  --theme-noon-highlight: #{$color-88};                      // #B1E7FC - Light blue highlight
+}
+
+// CONDITIONAL ENHANCEMENTS: Only applied when custom properties are supported
+@supports (color: var(--theme-primary)) {
+  // Progressive enhancement for modern browsers
+  .btn-primary {
+    background-color: var(--theme-btn-primary-bg);
+    border-color: var(--theme-btn-primary-border);
+    color: var(--theme-btn-primary-color);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--theme-primary-hover);
+      border-color: var(--theme-primary-hover);
+    }
+    
+    &:focus {
+      box-shadow: var(--theme-focus-shadow);
+    }
+  }
+  
+  .panel {
+    background-color: var(--theme-surface);
+    border-color: var(--theme-panel-border);
+    box-shadow: var(--theme-panel-shadow);
+    
+    &:hover {
+      box-shadow: var(--theme-panel-shadow-hover);
+    }
+    
+    .panel-heading {
+      background-color: var(--theme-panel-heading-bg);
+      color: var(--theme-on-surface);
+    }
+  }
+  
+  // High contrast accessibility enhancements for Noon theme
+  .form-control:focus {
+    border-color: var(--theme-input-border-focus);
+    box-shadow: var(--theme-focus-shadow);
+  }
+  
+  .alert {
+    &.alert-success {
+      background-color: var(--theme-state-success-bg);
+      border-color: var(--theme-state-success-border);
+      color: var(--theme-state-success-text);
+    }
+    
+    &.alert-info {
+      background-color: var(--theme-state-info-bg);
+      border-color: var(--theme-state-info-border);
+      color: var(--theme-state-info-text);
+    }
+    
+    &.alert-warning {
+      background-color: var(--theme-state-warning-bg);
+      border-color: var(--theme-state-warning-border);
+      color: var(--theme-state-warning-text);
+    }
+    
+    &.alert-danger {
+      background-color: var(--theme-state-danger-bg);
+      border-color: var(--theme-state-danger-border);
+      color: var(--theme-state-danger-text);
+    }
+  }
+} 

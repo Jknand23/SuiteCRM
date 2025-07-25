@@ -1,0 +1,298 @@
+/**
+ * @fileoverview Bootstrap 5 Namespaced Entry Point
+ * 
+ * Main entry point for the namespaced Bootstrap 5 system that provides modern
+ * UI components alongside existing Bootstrap 3.3.7 without conflicts. All
+ * Bootstrap 5 classes are prefixed with .bs5- to ensure zero compatibility issues.
+ * 
+ * Key Features:
+ * - Complete isolation from existing Bootstrap 3.3.7 classes
+ * - Modern Bootstrap 5 components with enhanced accessibility
+ * - Integration with SuiteCRM's CSS custom properties theme system
+ * - Selective component loading for optimal performance
+ * - Zero breaking changes to existing functionality
+ * 
+ * Usage:
+ * // Import the entire namespaced Bootstrap 5 system
+ * @import "bootstrap5-namespaced/bootstrap5-namespaced";
+ * 
+ * // OR import only specific components
+ * @import "bootstrap5-namespaced/variables";
+ * @import "bootstrap5-namespaced/grid";
+ * @import "bootstrap5-namespaced/buttons";
+ * 
+ * Dependencies:
+ * - SuiteCRM CSS custom properties system (existing)
+ * - Modern browser support (IE11+)
+ * 
+ * @author SuiteCRM Modernization Team
+ * @version 1.0.0
+ * @since 2024-01-16
+ */
+
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
+
+// Enable/disable components for selective loading
+$bs5-enable-grid: true !default;
+$bs5-enable-buttons: true !default;
+$bs5-enable-cards: true !default;
+$bs5-enable-forms: false !default;       // Forms not implemented yet
+$bs5-enable-navigation: false !default;  // Navigation not implemented yet
+$bs5-enable-modals: false !default;      // Modals not implemented yet
+$bs5-enable-tooltips: false !default;    // Tooltips not implemented yet
+
+// Component priority levels for loading
+$bs5-priority-critical: (grid, buttons) !default;
+$bs5-priority-high: (cards) !default;
+$bs5-priority-medium: (forms, navigation) !default;
+$bs5-priority-low: (modals, tooltips) !default;
+
+// =============================================================================
+// CORE FOUNDATION (ALWAYS LOADED)
+// =============================================================================
+
+// Core variables and mixins - Foundation for all components
+@import "variables";
+
+// =============================================================================
+// CRITICAL COMPONENTS (LOAD FIRST)
+// =============================================================================
+
+// Modern grid system - Essential for layouts
+@if $bs5-enable-grid {
+  @import "grid";
+}
+
+// Enhanced button system - Commonly used component
+@if $bs5-enable-buttons {
+  @import "buttons";
+}
+
+// =============================================================================
+// HIGH PRIORITY COMPONENTS
+// =============================================================================
+
+// Card system - Modern replacement for panels
+@if $bs5-enable-cards {
+  @import "cards";
+}
+
+// =============================================================================
+// MEDIUM PRIORITY COMPONENTS (FUTURE IMPLEMENTATION)
+// =============================================================================
+
+// Form controls and validation
+@if $bs5-enable-forms {
+  // @import "forms";           // TODO: Implement forms component
+}
+
+// Navigation components (navbar, nav, breadcrumb)
+@if $bs5-enable-navigation {
+  // @import "navigation";      // TODO: Implement navigation components
+}
+
+// =============================================================================
+// LOW PRIORITY COMPONENTS (FUTURE IMPLEMENTATION)
+// =============================================================================
+
+// Modal dialogs
+@if $bs5-enable-modals {
+  // @import "modals";          // TODO: Implement modal components
+}
+
+// Tooltips and popovers
+@if $bs5-enable-tooltips {
+  // @import "tooltips";        // TODO: Implement tooltip components
+}
+
+// =============================================================================
+// UTILITY CLASSES (ALWAYS AVAILABLE)
+// =============================================================================
+
+// Modern utility classes are included in grid.scss for now
+// Future: Create separate utilities.scss for comprehensive utility system
+
+// =============================================================================
+// INTEGRATION HELPERS
+// =============================================================================
+
+// Helper class to identify Bootstrap 5 namespaced components
+.bs5-component {
+  // Mark elements as using Bootstrap 5 namespaced classes
+  --bs5-component: true;
+}
+
+// Reset helper to prevent conflicts with Bootstrap 3.3.7
+.bs5-reset {
+  // Reset any inherited Bootstrap 3.3.7 styles
+  box-sizing: border-box;
+  
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+}
+
+// Theme integration helper
+.bs5-theme-aware {
+  // Ensure components respond to theme changes
+  color: var(--theme-text-color, var(--bs5-body-color));
+  background-color: var(--theme-background, var(--bs5-body-bg));
+}
+
+// =============================================================================
+// DEVELOPER UTILITIES
+// =============================================================================
+
+// Development mode indicators (removed in production)
+@if $bs5-enable-deprecation-messages {
+  // Deprecation warnings for developers
+  .bs5-deprecated {
+    &::before {
+      content: "⚠️ Bootstrap 5 Deprecated: Use modern alternative";
+      display: block;
+      background: #ffc107;
+      color: #000;
+      padding: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+  }
+}
+
+// Component usage tracking (development only)
+@if $bs5-enable-deprecation-messages {
+  .bs5-debug {
+    &::after {
+      content: "BS5: " attr(class);
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(0, 0, 255, 0.1);
+      color: blue;
+      font-size: 0.625rem;
+      padding: 0.125rem;
+      border-radius: 0.125rem;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  }
+}
+
+// =============================================================================
+// USAGE EXAMPLES AND DOCUMENTATION
+// =============================================================================
+
+/*
+BOOTSTRAP 5 NAMESPACED USAGE EXAMPLES:
+
+1. GRID SYSTEM:
+<div class="bs5-container">
+  <div class="bs5-row">
+    <div class="bs5-col-md-6">Content</div>
+    <div class="bs5-col-md-6">Content</div>
+  </div>
+</div>
+
+2. BUTTONS:
+<button class="bs5-btn bs5-btn-primary">Primary Button</button>
+<button class="bs5-btn bs5-btn-outline-secondary">Secondary Button</button>
+
+3. CARDS:
+<div class="bs5-card">
+  <div class="bs5-card-header">Card Header</div>
+  <div class="bs5-card-body">
+    <h5 class="bs5-card-title">Card Title</h5>
+    <p class="bs5-card-text">Card content goes here.</p>
+  </div>
+</div>
+
+4. COMBINING WITH EXISTING BOOTSTRAP 3.3.7:
+<!-- Existing Bootstrap 3.3.7 (preserved) -->
+<div class="panel panel-default">
+  <div class="panel-body">
+    <!-- Modern Bootstrap 5 component inside -->
+    <button class="bs5-btn bs5-btn-primary">Modern Button</button>
+  </div>
+</div>
+
+5. RESPONSIVE UTILITIES:
+<div class="bs5-d-none bs5-d-md-block">Hidden on mobile, visible on desktop</div>
+
+6. FLEXBOX UTILITIES:
+<div class="bs5-d-flex bs5-justify-content-between bs5-align-items-center">
+  <span>Left content</span>
+  <span>Right content</span>
+</div>
+
+IMPORTANT NOTES:
+- ALL Bootstrap 5 classes MUST use the .bs5- prefix
+- Existing .btn, .panel, .container classes remain unchanged
+- Bootstrap 5 components integrate with SuiteCRM theme system automatically
+- Use .bs5-theme-aware class for automatic theme integration
+*/
+
+// =============================================================================
+// PERFORMANCE OPTIMIZATION
+// =============================================================================
+
+// Optimize for critical rendering path
+// Grid and buttons are most commonly used, loaded first
+// Cards are high priority for dashboard components
+// Other components loaded on-demand
+
+// Future optimization: Consider CSS-in-JS approach for dynamic loading
+// Future optimization: Implement tree-shaking for unused components
+// Future optimization: Create minified builds for production
+
+// =============================================================================
+// BROWSER COMPATIBILITY
+// =============================================================================
+
+/*
+BROWSER SUPPORT:
+- Chrome 60+ (CSS Grid, CSS Custom Properties)
+- Firefox 55+ (CSS Grid, CSS Custom Properties)  
+- Safari 11+ (CSS Grid, CSS Custom Properties)
+- Edge 16+ (CSS Grid, CSS Custom Properties)
+- IE 11+ (Partial support, requires CSS Custom Properties polyfill)
+
+POLYFILLS NEEDED FOR IE 11:
+- CSS Custom Properties polyfill
+- CSS Grid polyfill (optional, flexbox fallback provided)
+- IntersectionObserver polyfill (for advanced components)
+
+GRACEFUL DEGRADATION:
+- Components fall back to flexbox when CSS Grid unavailable
+- CSS Custom Properties fall back to SCSS variables
+- Modern features enhance experience without breaking functionality
+*/
+
+// =============================================================================
+// BUILD INTEGRATION
+// =============================================================================
+
+/*
+INTEGRATION WITH EXISTING BUILD SYSTEM:
+
+1. Add to existing theme compilation:
+// In themes/SuiteP/css/Dawn/style.scss (and other themes)
+@import "../bootstrap5-namespaced/bootstrap5-namespaced";
+
+2. Selective loading for performance:
+$bs5-enable-grid: true;
+$bs5-enable-buttons: true;
+$bs5-enable-cards: false;  // Disable if not needed
+@import "../bootstrap5-namespaced/bootstrap5-namespaced";
+
+3. Component-specific imports:
+@import "../bootstrap5-namespaced/variables";
+@import "../bootstrap5-namespaced/grid";
+// Load only what you need
+
+PRODUCTION OPTIMIZATION:
+- Use PurgeCSS to remove unused Bootstrap 5 classes
+- Combine with existing SCSS compilation process
+- Consider separate build for Bootstrap 5 components
+*/ 

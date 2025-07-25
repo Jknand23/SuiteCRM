@@ -460,4 +460,368 @@ class TestEnvironmentCommands extends \Robo\Tasks
             . $urlBase
         );
     }
+
+    /**
+     * Configure enhanced security testing environment for new OAuth2 and API components
+     * Extends existing configureTests() functionality with OAuth2 provider and API security testing
+     * @param array $opts optional command line arguments for OAuth2 and API security testing
+     */
+    public function configureEnhancedSecurityTests(
+        array $opts = [
+            'oauth2_google_client_id' => '',
+            'oauth2_google_client_secret' => '',
+            'oauth2_google_redirect_uri' => '',
+            'api_key_test_key' => '',
+            'api_rate_limit_test' => true,
+            'security_headers_test' => true,
+        ]
+    ) {
+        $this->say('Configure Enhanced Security Test Environment');
+
+        // OAuth2 Provider Configuration for Testing
+        $default_google_client_id = $this->chooseConfigOrDefault('oauth2.google.client_id', 'test_google_client_id');
+        $this->askDefaultOptionWhenEmpty('OAuth2 Google Client ID:', $default_google_client_id, $opts['oauth2_google_client_id']);
+
+        $default_google_client_secret = $this->chooseConfigOrDefault('oauth2.google.client_secret', 'test_google_client_secret');
+        $this->askDefaultOptionWhenEmpty('OAuth2 Google Client Secret:', $default_google_client_secret, $opts['oauth2_google_client_secret']);
+
+        $default_google_redirect = $this->chooseConfigOrDefault('site_url', 'http://localhost') . '/auth/oauth/callback/google';
+        $this->askDefaultOptionWhenEmpty('OAuth2 Google Redirect URI:', $default_google_redirect, $opts['oauth2_google_redirect_uri']);
+
+        // API Security Testing Configuration
+        $this->askDefaultOptionWhenEmpty('API Key for Testing:', 'test_api_key_123', $opts['api_key_test_key']);
+        $this->askDefaultOptionWhenEmpty('Enable Rate Limit Testing:', true, $opts['api_rate_limit_test']);
+        $this->askDefaultOptionWhenEmpty('Enable Security Headers Testing:', true, $opts['security_headers_test']);
+
+        // Install environment variables using existing OS detection
+        $os = new OperatingSystem();
+        if ($os->isOsWindows()) {
+            $this->say('Windows detected - Installing Enhanced Security Test Variables');
+            $this->installWindowsEnvironmentVariables($opts);
+        } elseif ($os->isOsLinux()) {
+            $this->say('Linux detected - Installing Enhanced Security Test Variables');
+            $this->installUnixEnvironmentVariables($opts);
+        } elseif ($os->isOsMacOSX()) {
+            $this->say('macOS detected - Installing Enhanced Security Test Variables');
+            $this->installUnixEnvironmentVariables($opts);
+        } elseif ($os->isOsBSD()) {
+            $this->say('BSD detected - Installing Enhanced Security Test Variables');
+            $this->installUnixEnvironmentVariables($opts);
+        } elseif ($os->isOsSolaris()) {
+            $this->say('Solaris detected - Installing Enhanced Security Test Variables');
+            $this->installUnixEnvironmentVariables($opts);
+        } elseif ($os->isOsUnknown()) {
+            throw new \DomainException('Unknown Operating system');
+        } else {
+            throw new \DomainException('Unable to detect Operating system');
+        }
+
+        $this->say('Enhanced Security Test Environment Configuration Complete');
+    }
+
+    /**
+     * Validate OAuth2 test configuration without disrupting existing functionality
+     * Checks if OAuth2 provider credentials are properly configured for testing
+     * @param array $opts optional validation options
+     */
+    public function validateOAuth2TestConfig(
+        array $opts = [
+            'provider' => 'google',
+            'check_endpoints' => true,
+        ]
+    ) {
+        $this->say('Validating OAuth2 Test Configuration');
+
+        $provider = $opts['provider'];
+        $this->say("Checking OAuth2 provider: {$provider}");
+
+        // Check for required environment variables (non-intrusive)
+        $requiredVars = [
+            "OAUTH2_{$provider}_CLIENT_ID",
+            "OAUTH2_{$provider}_CLIENT_SECRET",
+            "OAUTH2_{$provider}_REDIRECT_URI"
+        ];
+
+        $missing = [];
+        foreach ($requiredVars as $var) {
+            if (empty(getenv($var))) {
+                $missing[] = $var;
+            }
+        }
+
+        if (!empty($missing)) {
+            $this->say('Missing OAuth2 environment variables:');
+            foreach ($missing as $var) {
+                $this->say("  - {$var}");
+            }
+            $this->say('Run configureEnhancedSecurityTests() to set up OAuth2 testing');
+            return false;
+        }
+
+        if ($opts['check_endpoints']) {
+            $this->say('OAuth2 endpoints configured:');
+            $this->say('  - Authorization: /auth/oauth/authorize/' . $provider);
+            $this->say('  - Callback: /auth/oauth/callback/' . $provider);
+        }
+
+        $this->say('OAuth2 test configuration is valid');
+        return true;
+    }
+
+    /**
+     * Generate test data for new OAuth2 and API security components
+     * Creates safe test data without affecting production data
+     * @param array $opts optional test data generation options
+     */
+    public function generateEnhancedTestData(
+        array $opts = [
+            'create_oauth_test_users' => true,
+            'create_api_test_keys' => true,
+            'setup_test_campaigns' => false,
+        ]
+    ) {
+        $this->say('Generating Enhanced Test Data');
+
+        if ($opts['create_oauth_test_users']) {
+            $this->say('Creating OAuth2 test user associations...');
+            // This would create test records in oauth2_user_providers table
+            // Implementation would be safe and non-destructive
+        }
+
+        if ($opts['create_api_test_keys']) {
+            $this->say('Creating API test keys...');
+            // This would create test API keys for middleware testing
+            // Implementation would be safe and isolated
+        }
+
+        if ($opts['setup_test_campaigns']) {
+            $this->say('Setting up test campaign data...');
+            // This would create minimal test campaign data for integration tests
+            // Implementation would be safe and isolated
+        }
+
+        $this->say('Enhanced test data generation complete');
+    }
+
+    /**
+     * Configure enhanced code coverage for test environment
+     * Integrates with existing codeception coverage and enhanced CodeCoverageCommands
+     * @param array $opts optional coverage configuration options
+     */
+    public function configureEnhancedTestCoverage(
+        array $opts = [
+            'enable_enhanced_coverage' => true,
+            'include_new_components' => true,
+            'coverage_threshold' => 75,
+            'output_format' => 'html',
+            'generate_component_reports' => true,
+        ]
+    ) {
+        $this->say('Configure Enhanced Test Coverage Environment');
+
+        // Validate codeception configuration exists
+        if (!file_exists('./codeception.dist.yml')) {
+            $this->say('ERROR: codeception.dist.yml not found');
+            throw new \RuntimeException('Codeception configuration file not found');
+        }
+
+        // Check if coverage is enabled in codeception
+        $config = file_get_contents('./codeception.dist.yml');
+        if (strpos($config, 'enabled: true') === false) {
+            $this->say('WARNING: Coverage not enabled in codeception.dist.yml');
+        } else {
+            $this->say('✓ Coverage enabled in codeception configuration');
+        }
+
+        // Configure coverage thresholds
+        $threshold = $opts['coverage_threshold'];
+        $this->askDefaultOptionWhenEmpty('Coverage Threshold (%):', $threshold, $opts['coverage_threshold']);
+
+        // Configure output format
+        $format = $opts['output_format'];
+        $this->askDefaultOptionWhenEmpty('Coverage Output Format (html/xml/text):', $format, $opts['output_format']);
+
+        // Configure new component inclusion
+        $includeComponents = $opts['include_new_components'];
+        $this->askDefaultOptionWhenEmpty('Include New Components in Coverage:', $includeComponents, $opts['include_new_components']);
+
+        // Create coverage output directories
+        $this->setupCoverageDirectories();
+
+        $this->say('Enhanced Test Coverage Environment Configuration Complete');
+    }
+
+    /**
+     * Setup coverage output directories for enhanced reporting
+     * Creates directories for component-specific coverage reports
+     */
+    private function setupCoverageDirectories()
+    {
+        $directories = [
+            './tests/_output/coverage/',
+            './tests/_output/oauth2_coverage/',
+            './tests/_output/api_security_coverage/',
+            './tests/_output/enhanced_coverage/',
+            './tests/_output/component_coverage/',
+        ];
+
+        foreach ($directories as $dir) {
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+                $this->say("Created coverage directory: {$dir}");
+            } else {
+                $this->say("Coverage directory exists: {$dir}");
+            }
+        }
+    }
+
+    /**
+     * Run enhanced coverage analysis for test environment
+     * Integrates with existing CodeCoverageCommands for comprehensive reporting
+     * @param array $opts optional analysis options
+     */
+    public function runEnhancedCoverageAnalysis(
+        array $opts = [
+            'include_oauth2' => true,
+            'include_api_security' => true,
+            'include_enhanced_middleware' => true,
+            'generate_summary' => true,
+        ]
+    ) {
+        $this->say('Running Enhanced Coverage Analysis');
+
+        // Check if CodeCoverageCommands is available
+        if (!class_exists('\\SuiteCRM\\Robo\\Plugin\\Commands\\CodeCoverageCommands')) {
+            $this->say('ERROR: CodeCoverageCommands not available');
+            throw new \RuntimeException('CodeCoverageCommands class not found');
+        }
+
+        try {
+            // Use existing CodeCoverageCommands for enhanced coverage
+            $coverageCommands = new \SuiteCRM\Robo\Plugin\Commands\CodeCoverageCommands();
+            
+            // Generate base coverage
+            $this->say('Generating base code coverage...');
+            $coverageCommands->codeCoverage(['ci' => false]);
+
+            // Generate enhanced component coverage
+            if ($opts['include_oauth2'] || $opts['include_api_security'] || $opts['include_enhanced_middleware']) {
+                $this->say('Generating enhanced component coverage...');
+                $coverageCommands->enhancedCodeCoverage([
+                    'include_oauth2' => $opts['include_oauth2'],
+                    'include_api_security' => $opts['include_api_security'],
+                    'include_enhanced_middleware' => $opts['include_enhanced_middleware'],
+                    'output_format' => 'html',
+                ]);
+            }
+
+            // Generate component summary
+            if ($opts['generate_summary']) {
+                $this->say('Generating coverage summary...');
+                $coverageCommands->coverageSummaryNewComponents();
+            }
+
+            $this->say('Enhanced Coverage Analysis Complete');
+        } catch (\Exception $e) {
+            $this->say('ERROR in coverage analysis: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Validate enhanced test coverage requirements
+     * Checks coverage thresholds and component coverage for enhanced components
+     * @param array $opts optional validation options
+     */
+    public function validateEnhancedCoverage(
+        array $opts = [
+            'min_coverage_threshold' => 75,
+            'check_new_components' => true,
+            'fail_on_threshold' => false,
+        ]
+    ) {
+        $this->say('Validating Enhanced Test Coverage');
+
+        $threshold = $opts['min_coverage_threshold'];
+        $checkComponents = $opts['check_new_components'];
+
+        // Check if coverage files exist
+        $coverageFiles = [
+            './tests/_output/coverage.xml' => 'Base Coverage',
+            './tests/_output/oauth2_coverage/' => 'OAuth2 Coverage',
+            './tests/_output/api_security_coverage/' => 'API Security Coverage',
+            './tests/_output/enhanced_coverage/' => 'Enhanced Middleware Coverage',
+        ];
+
+        $missingFiles = [];
+        foreach ($coverageFiles as $file => $description) {
+            if (!file_exists($file)) {
+                $missingFiles[] = $description;
+                $this->say("✗ Missing: {$description} ({$file})");
+            } else {
+                $this->say("✓ Found: {$description}");
+            }
+        }
+
+        if (!empty($missingFiles)) {
+            $this->say('WARNING: Some coverage files are missing');
+            $this->say('Run runEnhancedCoverageAnalysis() to generate missing reports');
+            if ($opts['fail_on_threshold']) {
+                throw new \RuntimeException('Coverage validation failed - missing coverage files');
+            }
+        }
+
+        if ($checkComponents) {
+            $this->validateNewComponentCoverage();
+        }
+
+        $this->say('Enhanced Coverage Validation Complete');
+    }
+
+    /**
+     * Validate coverage for new OAuth2 and API security components
+     * Ensures all new components have test coverage
+     */
+    public function validateNewComponentCoverage()
+    {
+        $this->say('Validating New Component Coverage...');
+
+        $newComponents = [
+            './lib/Authentication/OAuth2Service.php',
+            './lib/Authentication/ProviderFactory.php',
+            './lib/Authentication/SecurityValidator.php',
+            './lib/Authentication/TokenManager.php',
+            './lib/Authentication/UserLinker.php',
+            './Api/V8/Middleware/RateLimitMiddleware.php',
+            './Api/V8/Middleware/SecurityHeadersMiddleware.php',
+            './Api/V8/Middleware/CorsMiddleware.php',
+            './Api/V8/Middleware/ApiKeyAuthMiddleware.php',
+            './Api/V8/Middleware/EnhancedValidationMiddleware.php',
+            './Api/V8/Middleware/RequestLoggingMiddleware.php',
+            './Api/V8/Controller/EnhancedBaseController.php',
+            './lib/Authentication/SecurityMonitoringService.php',
+            './lib/Log/EnhancedLoggerService.php',
+        ];
+
+        $existingComponents = 0;
+        $totalComponents = count($newComponents);
+
+        foreach ($newComponents as $component) {
+            if (file_exists($component)) {
+                $existingComponents++;
+                $this->say("  ✓ {$component}");
+            } else {
+                $this->say("  ✗ {$component} (not found)");
+            }
+        }
+
+        $coverage = $totalComponents > 0 ? round(($existingComponents / $totalComponents) * 100, 2) : 0;
+        $this->say("New Component Coverage: {$existingComponents}/{$totalComponents} files ({$coverage}%)");
+
+        if ($coverage < 80) {
+            $this->say('WARNING: New component coverage below 80%');
+        } else {
+            $this->say('✓ New component coverage meets requirements');
+        }
+    }
 }

@@ -1,8 +1,22 @@
 <?php
-// Swagger needs this, but should remove - CORS
-header("Access-Control-Allow-Origin: *");
+// ENHANCED CORS IMPLEMENTATION: Basic headers for backward compatibility
+// Enhanced CORS middleware is available in Api/V8/Middleware/CorsMiddleware.php
+// This basic implementation will be phased out in favor of the configurable middleware
+global $sugar_config;
+
+// Use configured site URL as default origin instead of wildcard for security
+$defaultOrigin = $sugar_config['site_url'] ?? '*';
+$allowedOrigin = $sugar_config['cors']['allowed_origins'][0] ?? $defaultOrigin;
+
+// For backward compatibility, allow wildcard if explicitly configured
+if (isset($sugar_config['cors']['allowed_origins']) && in_array('*', $sugar_config['cors']['allowed_origins'])) {
+    $allowedOrigin = '*';
+}
+
+header("Access-Control-Allow-Origin: " . $allowedOrigin);
 header('Access-Control-Allow-Methods: POST, PATCH, GET, OPTIONS, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
 
 // @codingStandardsIgnoreStart
 if (!defined('sugarEntry')) {
