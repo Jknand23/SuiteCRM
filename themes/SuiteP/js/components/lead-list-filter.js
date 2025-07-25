@@ -218,8 +218,7 @@ document.addEventListener('alpine:init', () => {
  * @returns {Object} Alpine.js component configuration
  * @since 1.0.0
  */
-function leadListFilter() {
-    return {
+Alpine.data('leadListFilter', () => ({
         // Component state
         searchTerm: '',
         selectedCampaign: '',
@@ -234,6 +233,24 @@ function leadListFilter() {
         
         // Debounce timer
         searchDebounceTimer: null,
+        
+        // Computed properties for CSP compatibility
+        get activeFilterCount() {
+            let count = 0;
+            if (this.searchTerm) count++;
+            if (this.selectedCampaign) count++;
+            if (this.selectedIndustry) count++;
+            if (this.activityDays) count++;
+            return count;
+        },
+        
+        get hasActiveFilters() {
+            return this.activeFilterCount > 0;
+        },
+        
+        get advancedFiltersToggleText() {
+            return this.$store.leadFilters.showAdvancedFilters ? 'Hide Advanced' : 'Show Advanced';
+        },
         
         /**
          * Component initialization
@@ -390,5 +407,4 @@ function leadListFilter() {
                 this.$store.leadFilters.loadSavedFilter(filterId);
             }
         }
-    };
-} 
+})); 

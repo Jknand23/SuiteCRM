@@ -6,12 +6,26 @@ require_once('modules/AOS_PDF_Templates/formLetter.php');
 #[\AllowDynamicProperties]
 class LeadsListViewSmarty extends ListViewSmarty
 {
+    /** @var bool $forceEnhancedTemplate Force enhanced template usage */
+    public $forceEnhancedTemplate = false;
+    
     public function __construct()
     {
         parent::__construct();
         $this->targetList = true;
     }
 
+    /**
+     * Override setup to ensure proper initialization
+     *
+     * @since 1.0.0
+     */
+    public function setup($seed, $file, $where, $params = array(), $offset = 0, $limit = -1, $filter_fields = array(), $id_field = 'id', $id = null)
+    {
+        // Don't override the template file here anymore - we handle it in display()
+        // Just call parent setup with the standard template
+        return parent::setup($seed, $file, $where, $params, $offset, $limit, $filter_fields, $id_field, $id);
+    }
 
 
     /**
@@ -32,9 +46,18 @@ class LeadsListViewSmarty extends ListViewSmarty
         }
 
         // Use enhanced template for Phase 2 advanced filtering
-        $enhancedTemplate = 'modules/Leads/tpls/ListViewEnhanced.tpl';
-        if (file_exists($enhancedTemplate)) {
-            $file = $enhancedTemplate;
+        // Force enhanced template if flag is set or if not a popup request
+        $shouldUseEnhanced = $this->forceEnhancedTemplate || 
+                            (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup');
+        
+        if ($shouldUseEnhanced) {
+            $enhancedTemplate = 'modules/Leads/tpls/ListViewEnhanced.tpl';
+            if (file_exists($enhancedTemplate)) {
+                $file = $enhancedTemplate;
+                $GLOBALS['log']->info('Using enhanced leads template: ' . $enhancedTemplate);
+            } else {
+                $GLOBALS['log']->warn('Enhanced template not found: ' . $enhancedTemplate);
+            }
         }
         
         $ret = parent::process($file, $data, $htmlVar);
@@ -43,10 +66,61 @@ class LeadsListViewSmarty extends ListViewSmarty
             $this->ss->assign('exportLink', $this->buildExportLink());
         }
 
-        // Add the advanced filter bar to the template
-        $this->addAdvancedFilterBar();
+        // Add the advanced filter bar to the template (only for enhanced view)
+        if ($shouldUseEnhanced) {
+            $this->addAdvancedFilterBar();
+        }
 
         return $ret;
+    }
+    
+    /**
+     * Override display to add enhanced components before standard list view
+     *
+     * @since 1.0.0
+     */
+    public function display($end = true)
+    {
+        // Debug template loading
+        $GLOBALS['log']->info('LeadsListViewSmarty::display() called');
+        $GLOBALS['log']->info('Template file: ' . $this->tpl);
+        $GLOBALS['log']->info('Ajax load: ' . (isset($_REQUEST['ajax_load']) ? $_REQUEST['ajax_load'] : 'not set'));
+        $GLOBALS['log']->info('Data count: ' . (isset($this->data['data']) ? count($this->data['data']) : 0));
+        
+        // Check if we should show enhanced components
+        $shouldUseEnhanced = $this->forceEnhancedTemplate || 
+                            (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup');
+        
+        $enhancedContent = '';
+        
+        if ($shouldUseEnhanced) {
+            // Render our enhanced components separately
+            $enhancedTemplate = 'modules/Leads/tpls/ListViewEnhanced.tpl';
+            if (file_exists($enhancedTemplate)) {
+                // Render the enhanced content using the same Smarty instance so all vars are present
+                // Ensure data array is available for any future use
+                $this->ss->assign('data', $this->data);
+
+                $enhancedContent = $this->ss->fetch($enhancedTemplate);
+                
+                $GLOBALS['log']->info('Enhanced content rendered, length: ' . strlen($enhancedContent));
+            }
+        }
+        
+        // Now set the template to the standard list view template
+        $this->tpl = 'include/ListView/ListViewGeneric.tpl';
+        
+        // Call parent display to get the standard list view
+        $listContent = parent::display(false); // Don't end yet
+        
+        // Combine enhanced content with list content
+        $result = $enhancedContent . $listContent;
+        
+        // Do not echo here; listViewProcess will handle output
+        
+        $GLOBALS['log']->info('LeadsListViewSmarty::display() completed, total result length: ' . strlen($result));
+        
+        return $result;
     }
     
     /**
@@ -58,35 +132,89 @@ class LeadsListViewSmarty extends ListViewSmarty
     {
         global $sugar_config;
         
-        // Add Alpine.js CDN (for Phase 2 reactive components)
-        $alpineJs = '<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>';
+        // Add Alpine.js - use local file if available, fallback to CDN
+        $alpineJs = '<script defer src="themes/SuiteP/js/alpine.min.js"></script>';
+        if (!file_exists('themes/SuiteP/js/alpine.min.js')) {
+            $alpineJs = '<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>';
+        }
         
-        // Add Bootstrap 5 CSS (enhanced styling for filter components)
-        $bootstrapCss = '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">';
+        // Add Bootstrap 5 CSS - prioritize local file
+        $bootstrapCss = '';
+        if (file_exists('themes/SuiteP/css/bootstrap.min.css')) {
+            $bootstrapCss = '<link href="themes/SuiteP/css/bootstrap.min.css" rel="stylesheet">';
+        } else {
+            // Fallback to CDN with error handling
+            $bootstrapCss = '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" onerror="console.warn(\'Bootstrap CSS failed to load from CDN\')">';
+        }
         
         // Add lead filter component JavaScript
         $filterJs = '<script src="themes/SuiteP/js/components/lead-list-filter.js"></script>';
         
-        // Add custom filter styles
+        // Add improved custom filter styles with better integration
         $filterCss = '<style>
+            /* Lead Filter Bar Styles */
             .lead-filter-bar {
                 margin-bottom: 1rem;
                 border: 1px solid #dee2e6;
+                background-color: #f8f9fa;
+                border-radius: 0.375rem;
             }
+            
+            /* Filter tags */
             .filter-tag {
                 margin: 0.125rem;
+                display: inline-flex;
+                align-items: center;
             }
+            
+            /* Badge close button */
             .badge .btn-close {
                 font-size: 0.65em;
                 margin-left: 0.25rem;
+                filter: brightness(0) invert(1);
+            }
+            
+            /* Error message styling */
+            .alert-danger {
+                border-color: #dc3545;
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            
+            /* Table styling improvements */
+            .lead-table-container {
+                background: white;
+                border-radius: 0.375rem;
+                border: 1px solid #dee2e6;
+                overflow: hidden;
+            }
+            
+            /* Ensure existing SuiteCRM table styles are preserved */
+            .list table tr:hover {
+                background-color: #f5f5f5;
+            }
+            
+            /* Bootstrap integration with SuiteCRM */
+            .form-control, .form-select {
+                border-color: #ccc;
+                padding: 0.375rem 0.75rem;
+            }
+            
+            .btn {
+                padding: 0.375rem 0.75rem;
+                border-radius: 0.25rem;
             }
         </style>';
         
-        // Add to page header
-        if (isset($GLOBALS['sugar_config']['additionalHeaderContent'])) {
-            $GLOBALS['sugar_config']['additionalHeaderContent'] .= $alpineJs . $bootstrapCss . $filterJs . $filterCss;
-        } else {
-            $GLOBALS['sugar_config']['additionalHeaderContent'] = $alpineJs . $bootstrapCss . $filterJs . $filterCss;
+        // Add to page header with error handling
+        try {
+            if (isset($GLOBALS['sugar_config']['additionalHeaderContent'])) {
+                $GLOBALS['sugar_config']['additionalHeaderContent'] .= $alpineJs . $bootstrapCss . $filterJs . $filterCss;
+            } else {
+                $GLOBALS['sugar_config']['additionalHeaderContent'] = $alpineJs . $bootstrapCss . $filterJs . $filterCss;
+            }
+        } catch (Exception $e) {
+            error_log('Failed to include advanced filter assets: ' . $e->getMessage());
         }
     }
     

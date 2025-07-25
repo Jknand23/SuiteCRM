@@ -32,7 +32,7 @@
 {* Load SortableJS library for drag-and-drop column reordering *}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-<div x-data="leadTableView()" x-init="init()" class="lead-table-container">
+<div x-data="leadTableView" class="lead-table-container">
     {* Column Management Panel *}
     <div x-show="$store.leadData.columnManagerVisible" 
          x-transition:enter="transition ease-out duration-200"

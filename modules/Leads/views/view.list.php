@@ -15,5 +15,11 @@ class LeadsViewList extends ViewList
         parent::preDisplay();
 
         $this->lv = new LeadsListViewSmarty();
+        
+        // Ensure we're using the enhanced template for main list view
+        // (not popup view)
+        if (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup') {
+            $this->lv->forceEnhancedTemplate = true;
+        }
     }
 }

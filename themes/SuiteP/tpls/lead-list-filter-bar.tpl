@@ -23,13 +23,13 @@
  * @since 2024-01-15
  *}
 
-<div x-data="leadListFilter()" x-init="init()" class="lead-filter-bar bg-light p-3 mb-3 rounded shadow-sm">
+<div x-data="leadListFilter" class="lead-filter-bar bg-light p-3 mb-3 rounded shadow-sm">
     {* Filter Bar Header *}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0 text-primary">
             <i class="fa fa-filter me-2"></i>
             Lead Filters
-            <span x-show="activeFilterCount > 0" 
+            <span x-show="hasActiveFilters" 
                   class="badge bg-primary ms-2" 
                   x-text="activeFilterCount"></span>
         </h5>
@@ -40,14 +40,14 @@
                     class="btn btn-outline-secondary btn-sm me-2"
                     x-on:click="$store.leadFilters.showAdvancedFilters = !$store.leadFilters.showAdvancedFilters">
                 <i class="fa fa-cog me-1"></i>
-                <span x-text="$store.leadFilters.showAdvancedFilters ? 'Hide Advanced' : 'Show Advanced'"></span>
+                <span x-text="advancedFiltersToggleText"></span>
             </button>
             
             {* Clear All Filters *}
             <button type="button" 
                     class="btn btn-outline-danger btn-sm me-2"
-                    x-show="activeFilterCount > 0"
-                    x-on:click="clearAllFilters()">
+                    x-show="hasActiveFilters"
+                    x-on:click="clearAllFilters">
                 <i class="fa fa-times me-1"></i>
                 Clear All
             </button>
@@ -55,8 +55,8 @@
             {* Save Filter *}
             <button type="button" 
                     class="btn btn-outline-success btn-sm"
-                    x-show="activeFilterCount > 0"
-                    x-on:click="showSaveFilter()">
+                    x-show="hasActiveFilters"
+                    x-on:click="showSaveFilter">
                 <i class="fa fa-save me-1"></i>
                 Save Filter
             </button>
@@ -213,7 +213,7 @@
     </div>
     
     {* Active Filter Tags *}
-    <div x-show="activeFilterCount > 0" class="mt-3">
+    <div x-show="hasActiveFilters" class="mt-3">
         <h6 class="text-secondary mb-2">Active Filters:</h6>
         <div class="d-flex flex-wrap gap-2">
             {* Search Tag *}

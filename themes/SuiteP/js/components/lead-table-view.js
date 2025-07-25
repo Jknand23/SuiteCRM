@@ -108,80 +108,109 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * Loads lead data from API with current filters and pagination
+         * Load leads data from server with enhanced error handling
          * 
-         * @param {Object} filters Active filter criteria
-         * @param {boolean} resetPagination Whether to reset to page 1
+         * @param {Object} filters Filter criteria object
+         * @param {boolean} resetPagination Whether to reset pagination
          * @since 1.0.0
          */
         async loadLeads(filters = {}, resetPagination = false) {
+            // Reset error state
+            this.hasError = false;
+            this.errorMessage = '';
+            
+            if (resetPagination) {
+                this.currentPage = 1;
+                this.leads = [];
+            }
+            
+            this.isLoading = true;
+            
+            // Build API URL with debugging
+            const apiUrl = '/Api/V8/leads/filtered';
+            const queryParams = new URLSearchParams({
+                page: this.currentPage.toString(),
+                limit: this.pageSize.toString(),
+                sort: this.sortColumns[0]?.field || 'date_modified',
+                direction: this.sortColumns[0]?.direction || 'desc',
+                ...filters
+            });
+            
+            const fullUrl = `${apiUrl}?${queryParams.toString()}`;
+            console.log('Loading leads from:', fullUrl);
+            
             try {
-                this.isLoading = true;
-                this.hasError = false;
-                
-                if (resetPagination) {
-                    this.currentPage = 1;
+                // Check if we're in a valid environment
+                if (typeof fetch === 'undefined') {
+                    throw new Error('Fetch API not available. This may be an older browser.');
                 }
                 
-                // Check cache first for filter results
-                const cacheKey = this.generateCacheKey(filters, this.currentPage);
-                const cachedData = this.getCachedData(cacheKey);
-                
-                if (cachedData) {
-                    console.log('Using cached data for filters:', filters);
-                    if (resetPagination || this.currentPage === 1) {
-                        this.leads = cachedData.data || [];
-                    } else {
-                        this.leads = [...this.leads, ...(cachedData.data || [])];
-                    }
-                    this.totalCount = cachedData.totalCount || 0;
-                    this.isInitialLoad = false;
-                    this.isLoading = false;
-                    return;
-                }
-                
-                // Build API request parameters with enhanced sorting
-                const params = new URLSearchParams({
-                    page: this.currentPage,
-                    limit: this.pageSize,
-                    ...this.buildSortParams(),
-                    ...this.buildFilterParams(filters)
-                });
-                
-                const response = await fetch(`/Api/V8/leads/filtered?${params}`, {
+                // Enhanced fetch with better error handling
+                const response = await fetch(fullUrl, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    credentials: 'same-origin'
+                    credentials: 'same-origin' // Include cookies for session authentication
                 });
                 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                // Check if response is ok
                 if (!response.ok) {
-                    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                    let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.errors && errorData.errors.length > 0) {
+                            errorMessage = errorData.errors[0].detail || errorMessage;
+                        }
+                    } catch (parseError) {
+                        console.warn('Could not parse error response:', parseError);
+                    }
+                    throw new Error(errorMessage);
                 }
                 
                 const data = await response.json();
+                console.log('Received data:', data);
                 
-                // Cache the successful response
-                this.setCachedData(cacheKey, data);
+                // Validate response structure
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid response format: Expected JSON object');
+                }
                 
-                if (resetPagination || this.currentPage === 1) {
+                if (!Array.isArray(data.data)) {
+                    console.warn('Response data structure:', data);
+                    throw new Error('Invalid response format: Expected data array');
+                }
+                
+                // Update state with new data
+                if (resetPagination) {
                     this.leads = data.data || [];
                 } else {
                     this.leads = [...this.leads, ...(data.data || [])];
                 }
                 
-                this.totalCount = data.totalCount || 0;
+                this.totalCount = data.totalCount || data.data.length;
+                this.currentPage = data.page || this.currentPage;
+                
+                // Clear initial load flag
                 this.isInitialLoad = false;
                 
-                // Announce to screen readers when new data loads
-                if (!resetPagination && this.currentPage > 1) {
+                // Success feedback
+                if (data.data.length > 0) {
+                    console.log(`Successfully loaded ${data.data.length} leads`);
                     this.announceToScreenReader(`Loaded ${data.data.length} more leads. Total ${this.leads.length} of ${this.totalCount} leads displayed.`);
+                } else {
+                    console.log('No leads found matching criteria');
+                    this.announceToScreenReader('No leads found matching current criteria');
                 }
                 
             } catch (error) {
                 console.error('Error loading leads:', error);
+                console.error('Error stack:', error.stack);
                 this.hasError = true;
                 
                 // Enhanced error messaging based on error type
@@ -195,8 +224,10 @@ document.addEventListener('alpine:init', () => {
                     this.errorMessage = 'A server error occurred. Our team has been notified. Please try again later.';
                 } else if (!navigator.onLine) {
                     this.errorMessage = 'You appear to be offline. Please check your internet connection and try again.';
+                } else if (error.message?.includes('Fetch API not available')) {
+                    this.errorMessage = 'Your browser may not support this feature. Please update your browser or contact support.';
                 } else {
-                    this.errorMessage = 'Unable to load lead data. Please check your connection and try again.';
+                    this.errorMessage = `Unable to load lead data: ${error.message}. Please check your connection and try again.`;
                 }
                 
                 // Clear leads on error only if it's initial load
@@ -1006,8 +1037,7 @@ document.addEventListener('alpine:init', () => {
  * @returns {Object} Alpine.js component configuration
  * @since 1.1.0
  */
-function leadTableView() {
-    return {
+Alpine.data('leadTableView', () => ({
         // Component state
         showMobileView: false,
         isResizing: false,
@@ -1280,5 +1310,4 @@ function leadTableView() {
             
             return statusClasses[status] || 'badge bg-secondary';
         }
-    };
-} 
+})); 
