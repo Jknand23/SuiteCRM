@@ -37,39 +37,33 @@ class LeadsListViewSmarty extends ListViewSmarty
      */
     public function process($file, $data, $htmlVar)
     {
+        // Temporarily disable enhanced features to fix the error
+        /*
         // Add Alpine.js and Bootstrap 5 support for Phase 2 filter system
         $this->includeAdvancedFilterAssets();
+        */
         
         $configurator = new Configurator();
         if ($configurator->isConfirmOptInEnabled()) {
             $this->actionsMenuExtraItems[] = $this->buildSendConfirmOptInEmailToPersonAndCompany();
         }
 
-        // Use enhanced template for Phase 2 advanced filtering
-        // Force enhanced template if flag is set or if not a popup request
-        $shouldUseEnhanced = $this->forceEnhancedTemplate || 
-                            (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup');
-        
-        if ($shouldUseEnhanced) {
-            $enhancedTemplate = 'modules/Leads/tpls/ListViewEnhanced.tpl';
-            if (file_exists($enhancedTemplate)) {
-                $file = $enhancedTemplate;
-                $GLOBALS['log']->info('Using enhanced leads template: ' . $enhancedTemplate);
-            } else {
-                $GLOBALS['log']->warn('Enhanced template not found: ' . $enhancedTemplate);
-            }
-        }
-        
+        // Template switching is now handled in display().
         $ret = parent::process($file, $data, $htmlVar);
 
         if (!ACLController::checkAccess($this->seed->module_dir, 'export', true) || !$this->export) {
             $this->ss->assign('exportLink', $this->buildExportLink());
         }
 
+        // Temporarily disable the advanced filter bar
+        /*
         // Add the advanced filter bar to the template (only for enhanced view)
+        $shouldUseEnhanced = $this->forceEnhancedTemplate ||
+                            (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup');
         if ($shouldUseEnhanced) {
             $this->addAdvancedFilterBar();
         }
+        */
 
         return $ret;
     }
@@ -81,46 +75,25 @@ class LeadsListViewSmarty extends ListViewSmarty
      */
     public function display($end = true)
     {
-        // Debug template loading
-        $GLOBALS['log']->info('LeadsListViewSmarty::display() called');
-        $GLOBALS['log']->info('Template file: ' . $this->tpl);
-        $GLOBALS['log']->info('Ajax load: ' . (isset($_REQUEST['ajax_load']) ? $_REQUEST['ajax_load'] : 'not set'));
-        $GLOBALS['log']->info('Data count: ' . (isset($this->data['data']) ? count($this->data['data']) : 0));
-        
-        // Check if we should show enhanced components
-        $shouldUseEnhanced = $this->forceEnhancedTemplate || 
+        // Temporarily disable enhanced template to fix the error
+        /*
+        // Check if we should use the enhanced template
+        $shouldUseEnhanced = $this->forceEnhancedTemplate ||
                             (!isset($_REQUEST['action']) || $_REQUEST['action'] !== 'Popup');
-        
-        $enhancedContent = '';
-        
+
         if ($shouldUseEnhanced) {
-            // Render our enhanced components separately
             $enhancedTemplate = 'modules/Leads/tpls/ListViewEnhanced.tpl';
             if (file_exists($enhancedTemplate)) {
-                // Render the enhanced content using the same Smarty instance so all vars are present
-                // Ensure data array is available for any future use
-                $this->ss->assign('data', $this->data);
-
-                $enhancedContent = $this->ss->fetch($enhancedTemplate);
-                
-                $GLOBALS['log']->info('Enhanced content rendered, length: ' . strlen($enhancedContent));
+                $this->tpl = $enhancedTemplate;
+                $GLOBALS['log']->info('Using enhanced leads template for display: ' . $this->tpl);
+            } else {
+                $GLOBALS['log']->warn('Enhanced template not found for display, falling back: ' . $enhancedTemplate);
             }
         }
-        
-        // Now set the template to the standard list view template
-        $this->tpl = 'include/ListView/ListViewGeneric.tpl';
-        
-        // Call parent display to get the standard list view
-        $listContent = parent::display(false); // Don't end yet
-        
-        // Combine enhanced content with list content
-        $result = $enhancedContent . $listContent;
-        
-        // Do not echo here; listViewProcess will handle output
-        
-        $GLOBALS['log']->info('LeadsListViewSmarty::display() completed, total result length: ' . strlen($result));
-        
-        return $result;
+        */
+
+        // Call parent display to render the (now correctly set) template
+        return parent::display($end);
     }
     
     /**
@@ -132,10 +105,10 @@ class LeadsListViewSmarty extends ListViewSmarty
     {
         global $sugar_config;
         
-        // Add Alpine.js - use local file if available, fallback to CDN
-        $alpineJs = '<script defer src="themes/SuiteP/js/alpine.min.js"></script>';
-        if (!file_exists('themes/SuiteP/js/alpine.min.js')) {
-            $alpineJs = '<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>';
+        // Add Alpine.js CSP build - use local file if available, fallback to CDN
+        $alpineJs = '<script defer src="themes/SuiteP/js/alpine-csp.min.js"></script>';
+        if (!file_exists('themes/SuiteP/js/alpine-csp.min.js')) {
+            $alpineJs = '<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.x.x/dist/cdn.min.js"></script>';
         }
         
         // Add Bootstrap 5 CSS - prioritize local file
@@ -148,7 +121,9 @@ class LeadsListViewSmarty extends ListViewSmarty
         }
         
         // Add lead filter component JavaScript
-        $filterJs = '<script src="themes/SuiteP/js/components/lead-list-filter.js"></script>';
+        $filterJs = '<script defer src="themes/SuiteP/js/components/lead-list-filter.js"></script>';
+        $filterJs .= '<script defer src="themes/SuiteP/js/components/lead-table-view.js"></script>';
+        $filterJs .= '<script defer src="themes/SuiteP/js/lead-list-integration.js"></script>';
         
         // Add improved custom filter styles with better integration
         $filterCss = '<style>
@@ -230,28 +205,6 @@ class LeadsListViewSmarty extends ListViewSmarty
         
         // Assign to Smarty template
         $this->ss->assign('advancedFilterBar', $filterBarContent);
-        
-        // Add JavaScript for integrating with existing list view
-        $integrationJs = '<script>
-            document.addEventListener("lead-filters-changed", function(event) {
-                // Reload the list view when filters change
-                const filters = event.detail.filters;
-                console.log("Filters changed:", filters);
-                
-                // This will be enhanced to actually reload the list view data
-                // For now, just log the filter change
-                if (typeof sListView !== "undefined") {
-                    // Future: Integrate with existing SuiteCRM list view reload mechanism
-                    console.log("Would reload list view with filters:", filters);
-                }
-            });
-        </script>';
-        
-        if (isset($GLOBALS['sugar_config']['additionalHeaderContent'])) {
-            $GLOBALS['sugar_config']['additionalHeaderContent'] .= $integrationJs;
-        } else {
-            $GLOBALS['sugar_config']['additionalHeaderContent'] = $integrationJs;
-        }
     }
     
     /**

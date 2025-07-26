@@ -301,6 +301,56 @@ $dictionary['Task'] = array(
                 'source' => 'non-db',
                 'reportable' => false
             ),
+            
+        // Timer fields
+        'timer_is_running' => array(
+            'name' => 'timer_is_running',
+            'vname' => 'LBL_TIMER_IS_RUNNING',
+            'type' => 'bool',
+            'default' => 0,
+            'reportable' => true,
+            'audited' => false,
+            'comment' => 'Indicates if the timer is currently running'
+        ),
+        
+        'timer_start_time' => array(
+            'name' => 'timer_start_time',
+            'vname' => 'LBL_TIMER_START_TIME',
+            'type' => 'datetime',
+            'dbType' => 'datetime',
+            'reportable' => true,
+            'audited' => false,
+            'comment' => 'Timestamp when the current timer session started'
+        ),
+        
+        'timer_total_seconds' => array(
+            'name' => 'timer_total_seconds',
+            'vname' => 'LBL_TIMER_TOTAL_SECONDS',
+            'type' => 'int',
+            'len' => 11,
+            'default' => 0,
+            'reportable' => true,
+            'audited' => true,
+            'comment' => 'Total accumulated time in seconds'
+        ),
+        
+        'timer_sessions' => array(
+            'name' => 'timer_sessions',
+            'vname' => 'LBL_TIMER_SESSIONS',
+            'type' => 'text',
+            'dbType' => 'text',
+            'reportable' => false,
+            'audited' => false,
+            'comment' => 'JSON array of timer sessions with start/end times and durations'
+        ),
+        
+        'timer_total_display' => array(
+            'name' => 'timer_total_display',
+            'vname' => 'LBL_TIMER_TOTAL_DISPLAY',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'Formatted display of total time (HH:MM:SS)'
+        ),
     )
 ,
     'relationships' => array(

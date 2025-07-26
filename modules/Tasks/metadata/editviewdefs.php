@@ -74,7 +74,25 @@ array(
           'field' => '30',
         ),
       ),
-      'useTabs' => false,
+      'useTabs' => true,
+      'tabDefs' =>
+      array(
+        'LBL_TASK_INFORMATION' =>
+        array(
+          'newTab' => true,
+          'panelDefault' => 'expanded',
+        ),
+        'LBL_PANEL_ASSIGNMENT' =>
+        array(
+          'newTab' => true,
+          'panelDefault' => 'expanded',
+        ),
+        'LBL_PANEL_TIMER' =>
+        array(
+          'newTab' => true,
+          'panelDefault' => 'expanded',
+        ),
+      ),
     ),
     'panels' =>
     array(
@@ -159,6 +177,16 @@ array(
       'LBL_PANEL_ASSIGNMENT' => array(
         array(
             'assigned_user_name',
+        ),
+      ),
+      
+      'LBL_PANEL_TIMER' =>
+      array(
+        array(
+          array(
+            'name' => 'timer_widget',
+            'customCode' => '{include file="modules/Tasks/tpls/timer_widget.tpl"}',
+          ),
         ),
       ),
       

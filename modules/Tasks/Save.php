@@ -155,4 +155,16 @@ if (!isset($GLOBALS['check_notify'])) {
 $focus->save($GLOBALS['check_notify']);
 $return_id = $focus->id;
 
+// Handle timer start on create
+if (!empty($_REQUEST['timer_start_on_create']) && $_REQUEST['timer_start_on_create'] == '1') {
+    require_once('modules/Tasks/Services/TimerService.php');
+    try {
+        $timerService = new TimerService($return_id);
+        $timerService->startTimer();
+    } catch (Exception $e) {
+        // Log error but don't interrupt save process
+        $GLOBALS['log']->error('Failed to start timer on task create: ' . $e->getMessage());
+    }
+}
+
 handleRedirect($return_id, 'Tasks');

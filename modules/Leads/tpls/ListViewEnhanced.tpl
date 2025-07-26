@@ -29,19 +29,26 @@
     {* Include filter bar template *}
     {include file='themes/SuiteP/tpls/lead-list-filter-bar.tpl'}
 
-    {* Include Lead Table View Component - Phase 2 Feature 1 Step 1 *}
-    {* Basic fallback check for JavaScript availability *}
-    <noscript>
-        <div class="alert alert-warning">
-            <i class="fa fa-exclamation-triangle"></i>
-            JavaScript is required for the enhanced lead list features. Please enable JavaScript and refresh the page.
-        </div>
-    </noscript>
-    
     {* Load required JavaScript components with error handling *}
     <script src="themes/SuiteP/js/components/lead-table-view.js" onerror="console.error('Failed to load lead-table-view.js')"></script>
     <script src="themes/SuiteP/js/components/lead-list-filter.js" onerror="console.error('Failed to load lead-list-filter.js')"></script>
+{/if}
+
+{* Include the standard SuiteCRM list view template with actual data *}
+{include file='include/ListView/ListViewGeneric.tpl'}
+
+{* Enhanced table view for leads only (replaces standard table when Alpine.js is available) *}
+{if $pageData.bean.moduleDir == 'Leads'}
+    {* Basic fallback check for JavaScript availability *}
+    <noscript>
+        <div class="alert alert-info mt-3">
+            <i class="fa fa-info-circle"></i>
+            Enhanced lead list features require JavaScript. The standard list view is displayed above.
+        </div>
+    </noscript>
     
-    {* Include the interactive lead table *}
-    {include file='themes/SuiteP/tpls/components/lead-table-view.tpl'}
+    {* Container for enhanced lead table that will replace standard table via JavaScript *}
+    <div id="enhanced-lead-table-container" style="display: none;">
+        {include file='themes/SuiteP/tpls/components/lead-table-view.tpl'}
+    </div>
 {/if} 

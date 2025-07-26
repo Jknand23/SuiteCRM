@@ -48,6 +48,7 @@ $mod_strings = array(
     'LBL_REPLY_NAME' => '"Reply-to" Name:',
 
     'LBL_MODULE_NAME' => 'Campaigns',
+    'LBL_CAMPAIGN_PROGRESS' => 'Campaign Progress',
     'LBL_MODULE_TITLE' => 'Campaigns: Home',
     'LBL_SEARCH_FORM_TITLE' => 'Campaign Search',
     'LBL_LIST_FORM_TITLE' => 'Campaign List',

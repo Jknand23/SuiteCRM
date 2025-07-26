@@ -215,6 +215,15 @@ $app->group('', function () use ($app) {
          */
         $app->get('/leads/sse-stream', 'Api\V8\Controller\LeadSSEController:streamLeadUpdates');
 
+        /**
+         * Campaign Metrics API - Phase 2 Feature 2
+         */
+        
+        /**
+         * Get campaign performance metrics for dashboard widget
+         */
+        $app->get('/campaigns/metrics', 'Api\V8\Controller\CampaignMetricsController:getMetrics');
+
         // add custom routes
         $app->group('/custom', function () use ($app) {
             $app = CustomLoader::loadCustomRoutes($app);

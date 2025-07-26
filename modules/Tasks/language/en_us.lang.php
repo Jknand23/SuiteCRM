@@ -94,4 +94,12 @@ $mod_strings = array(
     //For export labels
     'LBL_DATE_DUE' => 'Date Due',
     'LBL_RELATED_TO' => 'Related to:',
+    
+    // Timer Labels
+    'LBL_PANEL_TIMER' => 'Time Tracking',
+    'LBL_TIMER_IS_RUNNING' => 'Timer Running',
+    'LBL_TIMER_START_TIME' => 'Timer Start Time',
+    'LBL_TIMER_TOTAL_SECONDS' => 'Total Time (seconds)',
+    'LBL_TIMER_SESSIONS' => 'Time Sessions',
+    'LBL_TIMER_TOTAL_DISPLAY' => 'Total Time',
 );

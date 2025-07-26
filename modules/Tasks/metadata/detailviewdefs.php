@@ -122,6 +122,11 @@ array(
           'newTab' => true,
           'panelDefault' => 'expanded',
         ),
+        'LBL_PANEL_TIMER' =>
+        array(
+          'newTab' => true,
+          'panelDefault' => 'expanded',
+        ),
       ),
     ),
     'panels' =>
@@ -187,6 +192,17 @@ array(
             'name' => 'date_modified',
             'customCode' => '{$fields.date_modified.value} {$APP.LBL_BY} {$fields.modified_by_name.value}',
             'label' => 'LBL_DATE_MODIFIED',
+          ),
+        ),
+      ),
+      'LBL_PANEL_TIMER' =>
+      array(
+        0 =>
+        array(
+          0 =>
+          array(
+            'name' => 'timer_widget',
+            'customCode' => '{include file="modules/Tasks/tpls/timer_widget.tpl"}',
           ),
         ),
       ),
