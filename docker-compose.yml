@@ -16,9 +16,9 @@ services:
       - ./themes:/var/www/html/themes
       - ./modules:/var/www/html/modules
       - ./Api:/var/www/html/Api
-      - ./config.php:/tmp/config.php:ro
-      - ./config_override.php:/tmp/config_override.php:ro
-      - ./docker-entrypoint.sh:/docker-entrypoint.sh:ro
+      - ./config.php:/var/www/html/config.php
+      - ./config_override.php:/var/www/html/config_override.php
+      - ./docker-entrypoint-updated.sh:/docker-entrypoint.sh:ro
       # Testing infrastructure
       - ./tests:/var/www/html/tests
       - ./vendor:/var/www/html/vendor
